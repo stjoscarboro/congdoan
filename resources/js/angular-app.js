@@ -4,6 +4,7 @@ require('angular-route');
 require('angular-sanitize');
 require('angular-ui-bootstrap');
 require('jquery-ui/ui/widgets/datepicker');
+require('jquery-ui/ui/i18n/datepicker-vi');
 require('jquery-ui/themes/base/theme.css');
 require('jquery-ui/themes/base/datepicker.css');
 require('bootstrap');

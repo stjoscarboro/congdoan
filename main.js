@@ -1,1 +1,1 @@
-require('./thanhle.js');
+require('./thanhle/signup.js');

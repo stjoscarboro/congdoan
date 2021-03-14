@@ -1,0 +1,58 @@
+<div class="signup">
+    <div class="intro">
+        <p>
+            Theo thông báo từ chính phủ Ontario và Toà Tổng Giám Mục Giáo Phận Toronto, vì tình hình dịch bệnh hiện
+            nay nên các nhà thờ thuộc vùng Toronto sẽ giới hạn số người tham dự trong các thanh lễ là <b>15%</b> tổng
+            số ghế ngồi. Do vậy nhà thờ St. Rose of Lima, Scarborough sẽ giới hạn số người tham dự trong các thánh lễ
+            là <b>{{total}}</b> người.
+        </p>
+
+        <p>
+            Nếu quý vị muốn tham dự thánh lễ trong các ngày dưới đây, xin điền vào email và số người sẽ tham dự.
+        </p>
+
+        <p>
+            Nếu quý vị muốn thay đổi số người tham dự, xin điền vào email và thay đổi số người tham dự, hoặc 0 nếu không thể tham dự.
+        </p>
+    </div>
+
+    <div ng-repeat="signup in signups">
+        <div class="liturgy">
+            {{formatDate(signup.date, signup.liturgy)}}
+        </div>
+
+        <form role="form" ng-submit="submit(signup.date)">
+            <div class="form">
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Số ghế còn trống:</label>
+
+                    <div class="col-sm-2">
+                        <b>{{getRemaining(signup.date)}}</b>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Địa chỉ email:</label>
+
+                    <div class="col-sm-6">
+                        <input type="email" ng-model="formData[signup.date].email" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Số người tham dự:</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="submit">
+                    <button class="btn btn-primary" type="submit">Đăng Ký</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">&nbsp;</div>
+</div>

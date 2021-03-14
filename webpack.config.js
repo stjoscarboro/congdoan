@@ -2,7 +2,7 @@ const Path = require('path');
 const PortFinder = require('portfinder');
 const ClosurePlugin = require('closure-webpack-plugin');
 const ProvidePlugin = require('webpack').ProvidePlugin;
-const contextPath = '/thanhle';
+const contextPath = '/congdoan';
 
 module.exports = async function (env) {
     const get = (it, val) => {
