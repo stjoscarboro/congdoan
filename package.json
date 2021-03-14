@@ -1,5 +1,5 @@
 {
-  "name": "thanhle",
+  "name": "congdoan",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --env.browser=no --env.verbose=yes",
