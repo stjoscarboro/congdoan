@@ -4,7 +4,7 @@ require('../resources/js/parish-service.js');
 require('./signup.scss');
 
 (() => {
-    const controller = ($scope, service) => {
+    const controller = ($scope, service, apputil) => {
         /**
          * init
          */
@@ -22,32 +22,23 @@ require('./signup.scss');
         $scope.submit = (date) => {
             $scope.signupData = null;
             $scope.formData[date].date = date;
-            const data = $scope.formData[date];
 
-            let signupDate = $scope.signups.find(item => item.date.getTime() === date.getTime());
-            if(signupDate) {
-                let signupItem = null;
-                $scope.signups.forEach(signup => {
-                    const item = signup.items.find(item => item.email === data.email);
-                    item && (signupItem = item);
-                });
+            let data = $scope.formData[date],
+                signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
 
-                const promise = !signupItem ? service.createSignup(data) : service.updateSignup(signupItem, data);
-                promise.then(() => {
-                    if(!signupItem) {
-                        signupDate.items.push(data);
-                    } else {
-                        signupItem = signupDate.items.find(item => item.email === data.email);
-                        if(!signupItem) {
-                            signupDate.items.push(data);
-                        } else {
-                            signupItem.count = data.count;
-                        }
-                    }
+            if(signup) {
+                let item = signup.data.find(item => item.email === data.email);
+                if(!item) {
+                    signup.data.push(apputil.pick(data, 'email', 'count'));
+                } else {
+                    Object.assign(item, apputil.pick(data, 'count'));
+                }
 
-                    $scope.signupData = data;
-                    location.hash = '#!/summary';
-                });
+                service.updateSignup(signup)
+                    .then(() => {
+                        $scope.signupData = data;
+                        location.hash = '#!/summary';
+                    });
             } else {
                 //error
             }
@@ -55,14 +46,14 @@ require('./signup.scss');
 
         $scope.formatDate = (date, liturgy) => {
             date = $.datepicker.formatDate('dd/mm/yy', date);
-            return `${date}${liturgy ? ` - ${liturgy}` : ''}`;
+            return `${date}${liturgy ? ` - ${liturgy.name}` : ''}`;
         };
 
         $scope.getRemaining = (date) => {
             const signupDate = $scope.signups.find(item => item.date.getTime() === date.getTime());
 
             let remaining = $scope.total;
-            signupDate.items.forEach(item => {
+            signupDate.data.forEach(item => {
                 remaining -= item.count || 0;
             });
 
@@ -102,7 +93,7 @@ require('./signup.scss');
         };
     };
 
-    controller.$inject = ['$scope', 'ParishService'];
+    controller.$inject = ['$scope', 'ParishService', 'AppUtil'];
     app.controller("thanhle", controller);
 })();
 

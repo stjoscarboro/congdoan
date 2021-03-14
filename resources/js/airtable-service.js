@@ -33,26 +33,20 @@ const { app } = require('./angular-app.js');
                         records.forEach(record => {
                             let value = {refId: record.id};
 
-                            if(config.tables[table].fields !== 'all') {
-                                config.tables[table].fields.forEach(field => {
-                                    switch(true) {
-                                        case field.startsWith('date'):
-                                            value[field] = parseDate(record.fields[field]);
-                                            break;
+                            config.tables[table].fields.forEach(field => {
+                                switch(true) {
+                                    case field.startsWith('date'):
+                                        value[field] = parseDate(record.fields[field]);
+                                        break;
 
-                                        case Array.isArray(record.fields[field]):
-                                            value[field] = record.fields[field][0];
-                                            break;
+                                    case Array.isArray(record.fields[field]):
+                                        value[field] = record.fields[field][0];
+                                        break;
 
-                                        default:
-                                            value[field] = record.fields[field] ? `${record.fields[field]}` : '';
-                                    }
-                                });
-                            } else {
-                                Object.keys(record).forEach(key => {
-                                    key !== 'id' && (value[key] = record[key]);
-                                });
-                            }
+                                    default:
+                                        value[field] = record.fields[field] ? `${record.fields[field]}` : '';
+                                }
+                            });
 
                             results.push(value);
                         });
