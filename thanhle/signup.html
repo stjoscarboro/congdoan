@@ -35,7 +35,8 @@
                     <label class="col-sm-4 control-label">Địa chỉ email:</label>
 
                     <div class="col-sm-6">
-                        <input type="email" ng-model="formData[signup.date].email" class="form-control" required>
+                        <input type="email" ng-model="formData[signup.date].email" class="form-control" required
+                               oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')">
                     </div>
                 </div>
 
@@ -43,7 +44,8 @@
                     <label class="col-sm-4 control-label">Số người tham dự:</label>
 
                     <div class="col-sm-2">
-                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control" required>
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control" required
+                               oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')">
                     </div>
                 </div>
 

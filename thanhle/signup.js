@@ -26,14 +26,23 @@ require('./signup.scss');
 
             let signupDate = $scope.signups.find(item => item.date.getTime() === date.getTime());
             if(signupDate) {
-                const signupItem = signupDate.items.find(item => item.email === data.email);
-                const promise = !signupItem ? service.createSignup(data) : service.updateSignup(signupItem.refId, data);
+                let signupItem = null;
+                $scope.signups.forEach(signup => {
+                    const item = signup.items.find(item => item.email === data.email);
+                    item && (signupItem = item);
+                });
 
+                const promise = !signupItem ? service.createSignup(data) : service.updateSignup(signupItem, data);
                 promise.then(() => {
                     if(!signupItem) {
                         signupDate.items.push(data);
                     } else {
-                        signupItem.count = data.count;
+                        signupItem = signupDate.items.find(item => item.email === data.email);
+                        if(!signupItem) {
+                            signupDate.items.push(data);
+                        } else {
+                            signupItem.count = data.count;
+                        }
                     }
 
                     $scope.signupData = data;
@@ -46,7 +55,7 @@ require('./signup.scss');
 
         $scope.formatDate = (date, liturgy) => {
             date = $.datepicker.formatDate('dd/mm/yy', date);
-            return `${date}${liturgy ? ' - ' + liturgy : ''}`;
+            return `${date}${liturgy ? ` - ${liturgy}` : ''}`;
         };
 
         $scope.getRemaining = (date) => {
@@ -54,7 +63,7 @@ require('./signup.scss');
 
             let remaining = $scope.total;
             signupDate.items.forEach(item => {
-                remaining -= item.count;
+                remaining -= item.count || 0;
             });
 
             return remaining;
@@ -68,6 +77,9 @@ require('./signup.scss');
         };
 
         const refresh = () => {
+            //scroll to top
+            $('html, body').scrollTop(0, 0);
+
             //handle browser refresh
             if(!$scope.signups) {
                 location.hash = '#!/signup';
@@ -76,6 +88,9 @@ require('./signup.scss');
 
             //handle back button refresh
             window.onhashchange = (e) => {
+                //scroll to top
+                $('html, body').scrollTop(0, 0);
+
                 if($scope.signups && (/\/signup$/).test(e.newURL)) {
                     $scope.$apply(() => {
                         $scope.signups.forEach(signup => {

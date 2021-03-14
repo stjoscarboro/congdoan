@@ -1,7 +1,7 @@
 html, body {
     width: 100%;
     height: 100%;
-    margin: 20px 0;
+    margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     font-size: 18px;
@@ -18,41 +18,53 @@ html, body {
         height: 100%;
     }
 
-    .header {
-        text-align: center;
-        font-weight: 600;
-        margin: 20px;
-    }
-
-    .signup {
-        width: 700px;
+    .container {
+        width: 720px;
         margin: 30px auto;
         text-align: justify;
 
-        .liturgy {
-            margin: 20px 0 5px 0;
-            color: #ffff00;
-            font-weight: 500;
+        .header {
+            text-align: center;
+            font-weight: 600;
+            height: 80px;
+            margin: 0 0 20px 0;
+            background: url(https://avatars.githubusercontent.com/u/38821324) no-repeat right 0/80px;
+
+            .title {
+                padding-top: 10px;
+            }
         }
 
-        .form {
-            padding: 10px;
-            border: 1px solid #f1f1f1;
-            border-radius: 5px;
-
-            .form-group {
-                margin-bottom: 12px;
+        .signup {
+            .intro {
+                display: none;
             }
 
-            .submit {
-                text-align: right;
+            .liturgy {
+                margin: 20px 0 5px 0;
+                color: #ffff00;
+                font-weight: 500;
+            }
+
+            .form {
+                padding: 10px;
+                border: 1px solid #f1f1f1;
+                border-radius: 5px;
+
+                .form-group {
+                    margin-bottom: 12px;
+                }
+
+                .submit {
+                    text-align: right;
+                }
             }
         }
     }
 
-    .summary {
-        width: 500px;
-        margin: 30px auto;
-        text-align: justify;
+    @media only screen and (max-device-height : 1024px) and (orientation: portrait) {
+        .container {
+            width: 90%;
+        }
     }
 }

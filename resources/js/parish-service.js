@@ -55,26 +55,9 @@ require('./liturgy-service.js');
                             });
                             liturgy && (signup.liturgy = liturgy.name);
 
-                            //set signup items
+                            //parse signup items
                             signups.forEach(record => {
-                                let item = {refId: record.refId},
-                                    matched = false;
-
-                                Object.keys(record.fields).forEach(key => {
-                                    switch(true) {
-                                        case key === date.toISOString().slice(0,10):
-                                            const value = record.fields[key] || '{}';
-                                            Object.assign(item, {date: date});
-                                            Object.assign(item, AppUtil.pick(JSON.parse(value), 'count', 'confirm'));
-                                            matched = true;
-                                            break;
-
-                                        default:
-                                            item[key] = record.fields[key];
-                                    }
-                                });
-
-                                matched && signup.items.push(item);
+                                parseSignup(signup, record);
                             });
                         }
                     });
@@ -89,42 +72,91 @@ require('./liturgy-service.js');
             return deferred.promise;
         };
 
-        service.createSignup = (signup) => {
+        service.createSignup = (data) => {
             const deferred = $q.defer();
-            const data = getPayload(signup);
 
-            AirtableService.createData('signup', config, data)
-                .then(data => {
-                    signup.refId = data.id;
-                    deferred.resolve();
+            getPayload(null, data)
+                .then(payload => {
+                    AirtableService.createData('signup', config, payload)
+                        .then(record => {
+                            data.refId = record.id;
+                            deferred.resolve();
+                        });
                 });
 
             return deferred.promise;
         };
 
-        service.updateSignup = (refId, signup) => {
+        service.updateSignup = (signup, data) => {
             const deferred = $q.defer();
-            const data = getPayload(signup);
 
-            AirtableService.updateData('signup', config, refId, data)
-                .then(data => {
-                    deferred.resolve(data);
+            getPayload(signup, data)
+                .then(payload => {
+                    AirtableService.updateData('signup', config, signup.refId, payload)
+                        .then(data => {
+                            deferred.resolve(data);
+                        });
                 });
 
             return deferred.promise;
         };
 
-        const getPayload = (signup) => {
-            const date = signup.date.toISOString().slice(0,10);
+        const parseSignup = (signup, record) => {
+            let item = {refId: record.refId},
+                matched = false;
 
-            return {
-                fields: {
-                    email: signup.email,
-                    [date]: JSON.stringify({
-                        count: signup.count
-                    })
+            Object.keys(record.fields).forEach(key => {
+                switch(true) {
+                    case key === 'email':
+                        item[key] = record.fields[key];
+                        break;
+
+                    case key === signup.date.toISOString().slice(0,10):
+                        const value = record.fields[key] || '{}';
+                        Object.assign(item, {date: signup.date});
+                        Object.assign(item, AppUtil.pick(JSON.parse(value), 'count', 'confirm'));
+                        matched = true;
+                        break;
                 }
-            };
+            });
+
+            matched && signup.items.push(item);
+        };
+
+        const getPayload = (signup, data) => {
+            const deferred = $q.defer();
+
+            if(signup) {
+                AirtableService.getData('signup', config, signup.refId)
+                    .then(record => {
+                        const date = data.date.toISOString().slice(0, 10);
+                        const fields = record[0].fields;
+
+                        Object.assign(fields, {
+                            [date]: JSON.stringify({
+                                count: data.count
+                            })
+                        });
+
+                        deferred.resolve({
+                            fields: fields
+                        });
+                    });
+            } else {
+                const date = data.date.toISOString().slice(0, 10);
+                const fields = {
+                        email: data.email,
+                        [date]: JSON.stringify({
+                            count: data.count
+                        })
+                    };
+
+                deferred.resolve({
+                    fields: fields
+                });
+            }
+
+            return deferred.promise;
         };
 
         return service;
