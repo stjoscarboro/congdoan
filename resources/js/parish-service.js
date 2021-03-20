@@ -1,5 +1,5 @@
 const { app } = require('./angular-app.js');
-const { __url, __key } = require('./airtable-secret.js');
+const { airtable } = require('./app-secret.js');
 
 require('./airtable-service.js');
 require('./liturgy-service.js');
@@ -9,8 +9,9 @@ require('./liturgy-service.js');
 
         let service = {},
             config = {
-                url: __url.parish,
-                key: __key,
+                url: atob(airtable.url.parish),
+                key: atob(airtable.key),
+
                 tables: {
                     mass: {
                         fields: ['date', 'active', 'data']
