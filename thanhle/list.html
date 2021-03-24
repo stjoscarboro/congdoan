@@ -1,0 +1,25 @@
+<div class="list">
+    <div ng-repeat="signup in signups">
+        <div class="liturgy">
+            {{formatDate(signup.date, signup.liturgy)}}
+        </div>
+
+        <table class="table">
+            <tr class="header">
+                <td class="order">Số Thứ Tự</td>
+                <td class="email">Tên</td>
+                <td class="email">Email</td>
+                <td class="count">Số Người</td>
+            </tr>
+
+            <tr ng-repeat="entry in signup.data" ng-if="entry.count > 0">
+                <td class="order">{{entry.order}}</td>
+                <td class="email">{{entry.name}}</td>
+                <td class="email">{{entry.email}}</td>
+                <td class="count">{{entry.count}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">&nbsp;</div>
+</div>

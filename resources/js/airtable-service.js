@@ -192,10 +192,7 @@ const { app } = require('./angular-app.js');
          * @returns {Date}
          */
         let parseDate = (value) => {
-            let date = new Date(Date.parse(value));
-
-            date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-            return date;
+            return new Date(Date.parse(value));
         };
 
         /**

@@ -29,15 +29,17 @@ require('./signup.scss');
             if(signup) {
                 let item = signup.data.find(item => item.email === data.email);
                 if(!item) {
-                    signup.data.push(apputil.pick(data, 'email', 'count'));
+                    item = apputil.pick(data, 'name', 'email', 'count');
+                    item.order = signup.data.length + 1;
+                    signup.data.push(item);
                 } else {
-                    Object.assign(item, apputil.pick(data, 'count'));
+                    Object.assign(item, apputil.pick(data, 'name', 'count'));
                 }
 
                 service.updateSignup(signup)
                     .then(() => {
                         $scope.signupData = data;
-                        location.hash = '#!/summary';
+                        location.hash = '/summary';
                     });
             } else {
                 //error
@@ -45,8 +47,10 @@ require('./signup.scss');
         };
 
         $scope.formatDate = (date, liturgy) => {
+            let time = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             date = $.datepicker.formatDate('dd/mm/yy', date);
-            return `${date}${liturgy ? ` - ${liturgy.name}` : ''}`;
+
+            return `${date} @${time} ${liturgy ? `- ${liturgy.name}` : ''}`;
         };
 
         $scope.getRemaining = (date) => {
@@ -60,33 +64,56 @@ require('./signup.scss');
             return remaining;
         };
 
+        $scope.checkSignup = (date) => {
+            let formData = $scope.formData[date];
+
+            if(formData) {
+                //assign this formData
+                $scope.signups.forEach(signup => {
+                    $scope.formData[signup.date] = {};
+                    Object.assign($scope.formData[signup.date], apputil.pick(formData, 'name', 'email'));
+
+                    signup.data.forEach(item => {
+                        if(item.name === formData.name || item.email === formData.email) {
+                            Object.assign(formData, apputil.pick(item, 'name', 'email', 'count'));
+                        }
+                    });
+                });
+
+                //assign all formData for this email
+                $scope.signups.forEach(signup => {
+                    Object.assign($scope.formData[signup.date], apputil.pick(formData, 'name', 'email'));
+
+                    signup.data.forEach(item => {
+                        if(item.email === $scope.formData[signup.date].email) {
+                            Object.assign($scope.formData[signup.date], apputil.pick(item, 'count'));
+                        }
+                    });
+                });
+            }
+        };
+
         const loadSignups = () => {
             service.loadSignups()
                 .then(values => {
                     $scope.signups = values;
+                    location.hash = '/signup';
                 });
         };
 
         const refresh = () => {
-            //scroll to top
-            $('html, body').scrollTop(0, 0);
-
             //handle browser refresh
             if(!$scope.signups) {
-                location.hash = '#!/signup';
-                history.pushState(null,  document.title, location.href);
+                loadSignups();
             }
 
             //handle back button refresh
             window.onhashchange = (e) => {
-                //scroll to top
-                $('html, body').scrollTop(0, 0);
-
                 if($scope.signups && (/\/signup$/).test(e.newURL)) {
                     $scope.$apply(() => {
-                        $scope.signups.forEach(signup => {
-                            $scope.formData[signup.date] = {};
-                        });
+                        if($scope.signupData) {
+                            $scope.checkSignup($scope.signupData.date);
+                        }
                     });
                 }
             };
@@ -98,18 +125,23 @@ require('./signup.scss');
 })();
 
 (() => {
-    const config = ($routeProvider) => {
+    const config = ($routeProvider, $locationProvider) => {
         const context = location.pathname.split('/')[1];
 
         $routeProvider.
         when('/summary', {
             templateUrl: `/${context}/thanhle/summary.html`
         }).
+        when('/list', {
+            templateUrl: `/${context}/thanhle/list.html`
+        }).
         otherwise({
             templateUrl: `/${context}/thanhle/signup.html`
         });
+
+        $locationProvider.hashPrefix('');
     };
 
-    config.$inject = ['$routeProvider'];
+    config.$inject = ['$routeProvider', '$locationProvider'];
     app.config(config);
 })();

@@ -34,6 +34,11 @@ require('./liturgy-service.js');
                     const liturgies = values[0];
                     const signups = values[1];
 
+                    signups.sort((s1, s2) => {
+                        let d1 = s1.date, d2 = s2.date;
+                        return d1.getTime() < d2.getTime() ? -1 : d1.getTime() > d2.getTime() ? 1 : 0;
+                    });
+
                     let result = [];
                     signups.forEach(signup => {
                         if(signup.active && signup.date.getTime() > today.getTime()) {
@@ -42,7 +47,7 @@ require('./liturgy-service.js');
 
                             //set liturgy
                             const liturgy = liturgies.find(item => {
-                                return item.date.getTime() === signup.date.getTime();
+                                return item.date.toLocaleDateString() === signup.date.toLocaleDateString();
                             });
                             liturgy && (signup.liturgy = liturgy);
                         }
@@ -62,7 +67,7 @@ require('./liturgy-service.js');
         const getPayload = (signup) => {
             return {
                 fields: {
-                    date: signup.date.toISOString().slice(0, 10),
+                    date: signup.date,
                     active: Boolean(signup.active),
                     data: JSON.stringify(signup.data)
                 }
