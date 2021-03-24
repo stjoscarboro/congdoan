@@ -2,6 +2,10 @@
     <div ng-repeat="signup in signups track by $index">
         <div class="liturgy">
             {{formatDate(signup.date, signup.liturgy)}}
+
+            <div class="remaining">
+                Số ghế trống: {{getRemaining(signup.date)}}
+            </div>
         </div>
 
         <table class="table">

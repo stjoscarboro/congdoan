@@ -69,8 +69,13 @@ html, body {
         }
 
         .list {
+            .remaining {
+                float: right;
+                color: #adff2f;
+            }
+
             .table {
-                margin: 0 auto;
+                margin: 0 auto 40px auto;
                 border: 1px solid $table-border-color;
 
                 tr > td {
