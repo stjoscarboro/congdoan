@@ -97,7 +97,7 @@ require('./signup.scss');
             service.loadSignups()
                 .then(values => {
                     $scope.signups = values;
-                    location.hash = '/signup';
+                    location.hash = location.hash || '/signup';
                 });
         };
 
