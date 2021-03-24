@@ -1,20 +1,16 @@
 <div class="summary">
-    <div ng-if="signupData.count > 0">
-        <p>
-            Cám ơn quý vị đã đăng ký tham dự cho thánh lễ vào ngày <b>{{formatDate(signupData.date)}}</b>
-            với số người tham dự là <b>{{signupData.count}}</b> người. Chúng tôi sẽ liên lạc với quý vị vào
-            sáng ngày <b>{{formatDate(signupData.date)}}</b> qua địa chỉ email <b>{{signupData.email}}</b>.
-        </p>
+    <p ng-if="signupData.count > 0">
+        Cám ơn quý vị đã đăng ký tham dự cho thánh lễ vào ngày <b>{{formatDate(signupData.date)}}</b>
+        với số người tham dự là <b>{{signupData.count}}</b> người. Nếu có gì thay đổi, chúng tôi sẽ liên
+        lạc với quý vị qua địa chỉ email <b>{{signupData.email}}</b>.
+    </p>
 
-        <p>
-            Xin kính chúc quý vị luôn bình an trong Chúa.
-        </p>
-    </div>
+    <p ng-if="signupData.count == 0">
+        Cám ơn quý vị đã cho chúng tôi biết là quý vị không thể tham dự thánh lễ vào ngày
+        <b>{{formatDate(signupData.date)}}</b>. Xin hẹn gặp lại vào thánh lễ sau.
+    </p>
 
-    <div ng-if="signupData.count == 0">
-        <p>
-            Cám ơn quý vị đã cho chúng tôi biết là quý vị không thể tham dự thánh lễ vào ngày <b>{{formatDate(signupData.date)}}</b>.
-            Xin hẹn gặp lại vào tuần sau.
-        </p>
-    </div>
+    <p>
+        Xin kính chúc quý vị luôn bình an trong Chúa.
+    </p>
 </div>
