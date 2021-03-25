@@ -4,7 +4,7 @@ require('../resources/js/parish-service.js');
 require('./signup.scss');
 
 (() => {
-    const controller = ($scope, service, apputil) => {
+    const controller = ($scope, $q, service, apputil) => {
         /**
          * init
          */
@@ -14,43 +14,61 @@ require('./signup.scss');
 
             //handle browser refresh
             refresh();
-
-            //load schedules
-            loadSignups();
         };
 
-        $scope.submit = (date) => {
-            $scope.signupData = null;
-            $scope.formData[date].date = date;
+        /**
+         * submit
+         */
+        $scope.submit = () => {
+            let promises = [];
+            $scope.signupData = [];
 
-            let data = $scope.formData[date],
-                signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
+            $scope.signups.forEach(signup => {
+                let date = signup.date,
+                    data = $scope.formData[date],
+                    item = signup.data.find(item => item.email === data.email);
 
-            if(signup) {
-                let item = signup.data.find(item => item.email === data.email);
                 if(!item) {
-                    item = apputil.pick(data, 'name', 'email', 'count');
+                    item = apputil.pick(data, 'name', 'email', 'phone', 'count');
                     item.order = signup.data.length + 1;
                     signup.data.push(item);
                 } else {
-                    Object.assign(item, apputil.pick(data, 'name', 'count'));
+                    item.name = data.name;
+                    item.phone = data.phone;
+                    item.count = data.count;
                 }
 
-                service.updateSignup(signup)
-                    .then(() => {
-                        $scope.signupData = data;
-                        location.hash = '/summary';
+                promises.push(
+                    service.updateSignup(signup)
+                        .then(() => {
+                            if(item.count > 0) {
+                                Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
+                                $scope.signupData.push(item);
+                            }
+                        })
+                );
+            });
+
+            $q.all(promises)
+                .then(() => {
+                    $scope.signupData.sort((o1, o2) => {
+                        let d1 = o1.date, d2 = o2.date;
+                        return d1.getTime() < d2.getTime() ? -1 : 1;
                     });
-            } else {
-                //error
-            }
+
+                    location.hash = '/summary';
+                });
         };
 
         $scope.formatDate = (date, liturgy) => {
-            let time = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            let time = date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'});
             date = $.datepicker.formatDate('dd/mm/yy', date);
 
             return `${date} @${time} ${liturgy ? `- ${liturgy.name}` : ''}`;
+        };
+
+        $scope.formatPhone = (phone) => {
+            return (phone || '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
         };
 
         $scope.getRemaining = (date) => {
@@ -65,24 +83,26 @@ require('./signup.scss');
         };
 
         $scope.checkSignup = (date) => {
-            let formData = $scope.formData[date];
+            let data = $scope.formData[date];
 
-            if(formData) {
+            if(data) {
                 //assign this formData
                 $scope.signups.forEach(signup => {
                     $scope.formData[signup.date] = {};
-                    Object.assign($scope.formData[signup.date], apputil.pick(formData, 'name', 'email'));
+                    Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        if(item.name === formData.name || item.email === formData.email) {
-                            Object.assign(formData, apputil.pick(item, 'name', 'email', 'count'));
+                        if(data.name && item.name === data.name || data.email && item.email === data.email || data.phone && item.phone === data.phone) {
+                            Object.assign(data, apputil.pick(item, 'email', 'count'));
+                            data.name !== '' && Object.assign(data, apputil.pick(item, 'name'));
+                            data.phone !== '' && Object.assign(data, apputil.pick(item, 'phone'));
                         }
                     });
                 });
 
                 //assign all formData for this email
                 $scope.signups.forEach(signup => {
-                    Object.assign($scope.formData[signup.date], apputil.pick(formData, 'name', 'email'));
+                    Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
                         if(item.email === $scope.formData[signup.date].email) {
@@ -97,7 +117,11 @@ require('./signup.scss');
             service.loadSignups()
                 .then(values => {
                     $scope.signups = values;
-                    location.hash = location.hash || '/signup';
+
+                    //handle default page
+                    if(!(/\/(signup|list)$/).test(location.hash)) {
+                        location.hash = '/signup';
+                    }
                 });
         };
 
@@ -109,18 +133,22 @@ require('./signup.scss');
 
             //handle back button refresh
             window.onhashchange = (e) => {
-                if($scope.signups && (/\/signup$/).test(e.newURL)) {
-                    $scope.$apply(() => {
-                        if($scope.signupData) {
-                            $scope.checkSignup($scope.signupData.date);
-                        }
-                    });
+                if(!$scope.signups) {
+                    loadSignups();
+                } else {
+                    if((/\/signup$/).test(e.newURL)) {
+                        $scope.$apply(() => {
+                            if($scope.signupData && $scope.signupData.length > 0) {
+                                $scope.checkSignup($scope.signupData[0].date);
+                            }
+                        });
+                    }
                 }
             };
         };
     };
 
-    controller.$inject = ['$scope', 'ParishService', 'AppUtil'];
+    controller.$inject = ['$scope', '$q', 'ParishService', 'AppUtil'];
     app.controller("thanhle", controller);
 })();
 

@@ -44,15 +44,19 @@ html, body {
             margin: 20px 0 5px 0;
             color: #ffff00;
             font-weight: 500;
+
+            .remaining {
+                float: right;
+            }
         }
 
         .signup {
             .content {
                 width: 720px;
-                margin: 0 auto;
+                margin: 30px auto 20px auto;
 
-                .form {
-                    padding: 10px;
+                .form1, .form2 {
+                    padding: 20px 20px 5px 20px;
                     border: 1px solid #f1f1f1;
                     border-radius: 5px;
 
@@ -60,20 +64,29 @@ html, body {
                         margin-bottom: 12px;
                     }
 
-                    .submit {
-                        text-align: right;
-                        margin-top: -32px;
+                    .form-control {
+                        height: 30px;
                     }
                 }
+
+                .form2 {
+                    margin-bottom: 20px;
+                    padding: 15px 15px 0 15px;
+                }
+            }
+
+            .submit {
+                text-align: right;
+                margin-top: 20px;
             }
         }
 
-        .list {
-            .remaining {
-                float: right;
-                color: #adff2f;
-            }
+        .summary {
+            width: 600px;
+            margin: 30px auto;
+        }
 
+        .list {
             .table {
                 margin: 0 auto 40px auto;
                 border: 1px solid $table-border-color;

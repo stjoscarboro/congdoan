@@ -1,14 +1,47 @@
 <div class="summary">
-    <p ng-if="signupData.count > 0">
-        Cám ơn quý vị đã ghi tên tham dự cho thánh lễ vào ngày <b>{{formatDate(signupData.date)}}</b>
-        với số người tham dự là <b>{{signupData.count}}</b> người. Nếu có gì thay đổi, chúng tôi sẽ liên
-        lạc với quý vị qua địa chỉ email <b>{{signupData.email}}</b>.
-    </p>
+    <div ng-if="signupData.length == 0">
+        <p>
+            Cám ơn quý vị đã cho chúng tôi biết là quý vị không thể tham dự cho các thánh lễ sắp tới.
+            Xin hẹn gặp lại quý vị vào dịp khác.
+        </p>
+    </div>
 
-    <p ng-if="signupData.count == 0">
-        Cám ơn quý vị đã cho chúng tôi biết là quý vị không thể tham dự thánh lễ vào ngày
-        <b>{{formatDate(signupData.date)}}</b>. Xin hẹn gặp lại vào thánh lễ sau.
-    </p>
+    <div ng-if="signupData.length > 0">
+        <div ng-if="signupData.length == 1">
+            <p>
+                Cám ơn quý vị đã ghi tên tham dự cho thánh lễ vào ngày:
+            <p>
+
+            <ul>
+                <li>
+                    <b>{{formatDate(signupData[0].date, signupData[0].liturgy)}}</b><br>
+                    Số người tham dự: <b>{{signupData[0].count}}</b>
+                </li>
+            </ul>
+        </div>
+
+        <div ng-if="signupData.length > 1">
+            <p>
+                Cám ơn quý vị đã ghi tên tham dự cho các thánh lễ như sau:
+            </p>
+
+            <ul ng-repeat="data in signupData">
+                <li ng-if="data.count > 0">
+                    <b>{{formatDate(data.date, data.liturgy)}}</b><br>
+                    Số người tham dự: <b>{{data.count}}</b>
+                </li>
+            </ul>
+        </div>
+
+        <p ng-if="!signupData[0].phone">
+            Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <b>{{signupData[0].email}}</b>.
+        </p>
+
+        <p ng-if="signupData[0].phone">
+            Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <b>{{signupData[0].email}}</b>
+            hoặc số phone <b>{{formatPhone(signupData[0].phone)}}</b>.
+        </p>
+    </div>
 
     <p>
         Xin kính chúc quý vị luôn bình an trong Chúa.

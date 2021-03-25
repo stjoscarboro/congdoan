@@ -9,7 +9,7 @@
 
         <p>
             Nếu quý vị muốn tham dự thánh lễ trong các ngày dưới đây, xin điền vào <b><u>email</u></b> và số người sẽ
-            tham dự thánh lễ.
+            tham dự trong mỗi thánh lễ.
         </p>
 
         <p>
@@ -18,26 +18,14 @@
         </p>
     </div>
 
-    <div ng-repeat="signup in signups track by $index" class="content">
-        <div class="liturgy">
-            {{formatDate(signup.date, signup.liturgy)}}
-        </div>
-
-        <form role="form" ng-submit="submit(signup.date)" class="form">
-            <div class="form-group row">
-                <label class="col-sm-4 control-label">Số ghế còn trống:</label>
-
-                <div class="col-sm-2">
-                    <b>{{getRemaining(signup.date)}}</b>
-                </div>
-            </div>
-
+    <form role="form" ng-submit="submit()" class="content">
+        <div class="form1">
             <div class="form-group row">
                 <label class="col-sm-4 control-label">Tên:</label>
 
                 <div class="col-sm-6">
                     <input type="text" ng-model="formData[signup.date].name" class="form-control" required ng-blur="checkSignup(signup.date)"
-                           oninvalid="this.setCustomValidity('Xin quý vị nhập tên.')" oninput="this.setCustomValidity('')">
+                           oninvalid="this.setCustomValidity('Xin quý vị nhập tên.')" oninput="this.setCustomValidity('')" />
                 </div>
             </div>
 
@@ -46,24 +34,45 @@
 
                 <div class="col-sm-6">
                     <input type="email" ng-model="formData[signup.date].email" class="form-control" required ng-blur="checkSignup(signup.date)"
-                           oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')">
+                           oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')" />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 control-label">Số người tham dự:</label>
+                <label class="col-sm-4 control-label">Số điện thoại:</label>
 
-                <div class="col-sm-2">
-                    <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control" required
-                           oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')">
+                <div class="col-sm-3">
+                    <input type="text" ng-model="formData[signup.date].phone" class="form-control" ui-mask="(999) 999-9999" ng-blur="checkSignup(signup.date)" />
+                </div>
+            </div>
+        </div>
+
+        <div ng-repeat="signup in signups track by $index">
+            <div class="liturgy">
+                {{formatDate(signup.date, signup.liturgy)}}
+
+                <div class="remaining">
+                    Đã ghi tên: <b>{{total - getRemaining(signup.date)}}</b>, còn lại: <b>{{getRemaining(signup.date)}}</b>
                 </div>
             </div>
 
-            <div class="submit">
-                <button class="btn btn-primary" type="submit">Ghi Tên</button>
+            <div class="form2">
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Số người tham dự:</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control"
+                               oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')" />
+                    </div>
+                    <!--<div style="display: inline-flex; padding-top: 2px;">(hoặc số 0 để xoá)</div>-->
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="submit">
+            <button class="btn btn-primary" type="submit">Ghi Tên</button>
+        </div>
+    </form>
 
     <div class="footer">&nbsp;</div>
 </div>

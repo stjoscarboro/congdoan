@@ -4,7 +4,7 @@
             {{formatDate(signup.date, signup.liturgy)}}
 
             <div class="remaining">
-                Số ghế còn trống: {{getRemaining(signup.date)}}
+                Đã ghi tên: <b>{{total - getRemaining(signup.date)}}</b>, còn lại: <b>{{getRemaining(signup.date)}}</b>
             </div>
         </div>
 

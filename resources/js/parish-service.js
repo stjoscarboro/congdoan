@@ -65,6 +65,11 @@ require('./liturgy-service.js');
         };
 
         const getPayload = (signup) => {
+            signup.data.forEach(item => {
+                delete item['$$hashKey'];
+            });
+
+            // console.log(`data length: ${JSON.stringify(signup.data).length}`);
             return {
                 fields: {
                     date: signup.date,

@@ -2,6 +2,7 @@ const angular = require('angular');
 
 require('angular-route');
 require('angular-sanitize');
+require('angular-ui-mask');
 require('angular-ui-bootstrap');
 require('jquery-ui/ui/widgets/datepicker');
 // require('jquery-ui/ui/i18n/datepicker-vi');
@@ -13,7 +14,7 @@ require('ui-select');
 require('ui-select/dist/select.css');
 require('resources/css/angular-app.scss');
 
-const app = angular.module('angular-app', ['ui.bootstrap', 'ui.select', 'ngSanitize', 'ngRoute']);
+const app = angular.module('angular-app', ['ui.bootstrap', 'ui.select', 'ui.mask', 'ngSanitize', 'ngRoute']);
 module.exports = { app: app };
 
 (() => {
