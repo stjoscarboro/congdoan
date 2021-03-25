@@ -1,5 +1,5 @@
 <div class="list">
-    <div ng-repeat="signup in signups track by $index">
+    <div ng-repeat="signup in signups track by $index" ng-show="listIndex == $index">
         <div class="liturgy">
             {{formatDate(signup.date, signup.liturgy)}}
 
@@ -11,18 +11,25 @@
         <table class="table">
             <tr class="header">
                 <td class="order">Số Thứ Tự</td>
-                <td class="email">Tên</td>
+                <td class="name">Tên</td>
                 <td class="email">Email</td>
+                <td class="phone">Phone</td>
                 <td class="count">Số Người</td>
             </tr>
 
             <tr ng-repeat="entry in signup.data track by $index" ng-if="entry.count > 0">
                 <td class="order">{{entry.order}}</td>
-                <td class="email">{{entry.name}}</td>
+                <td class="name">{{entry.name}}</td>
                 <td class="email">{{entry.email}}</td>
+                <td class="phone">{{formatPhone(entry.phone)}}</td>
                 <td class="count">{{entry.count}}</td>
             </tr>
         </table>
+
+        <div class="nav">
+            <a href="" ng-click="prevList()" title="" class="prev"><i class="glyphicon glyphicon-arrow-left"></i></a>
+            <a href="" ng-click="nextList()" class="next"><i class="glyphicon glyphicon-arrow-right"></i></a>
+        </div>
     </div>
 
     <div class="footer">&nbsp;</div>

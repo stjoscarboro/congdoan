@@ -24,15 +24,15 @@ html, body {
 
     .container {
         width: 820px;
-        margin: 30px auto;
+        margin: 0 auto;
         text-align: justify;
 
         .header {
             width: 720px;
+            margin: 30px auto 20px auto;
             text-align: center;
             font-weight: 600;
             height: 80px;
-            margin: 0 0 20px 0;
             background: url(https://avatars.githubusercontent.com/u/38821324) no-repeat right 0/80px;
 
             .title {
@@ -66,6 +66,7 @@ html, body {
 
                     .form-control {
                         height: 30px;
+                        font-size: 16px;
                     }
                 }
 
@@ -87,8 +88,11 @@ html, body {
         }
 
         .list {
+            width: 1000px;
+            margin-left: -105px;
+
             .table {
-                margin: 0 auto 40px auto;
+                margin: 0 auto 10px auto;
                 border: 1px solid $table-border-color;
 
                 tr > td {
@@ -100,22 +104,51 @@ html, body {
                     background-color: #2f4e67;
                     text-align: left;
                     font-weight: 500;
+
+                    .order {
+                        border-left: 1px solid $table-border-color;
+                    }
                 }
 
                 .order {
-                    width: 140px;
+                    width: 120px;
                     text-align: center;
                 }
 
-                .email {
+                .name, .email, .phone, .count {
                     border-left: 1px solid $table-border-color;
-                    border-right: 1px solid $table-border-color;
-                    padding-left: 20px;
+                    padding-left: 10px;
+                }
+
+                .phone {
+                    width: 160px;
                 }
 
                 .count {
                     width: 120px;
                     text-align: center;
+                }
+            }
+
+            .nav {
+                display: inline-block;
+                width: 100%;
+
+                .prev {
+                    color: #f0f0f0;
+                    float: left;
+                    width: 18px;
+                }
+
+                .next {
+                    color: #f0f0f0;
+                    float: right;
+                    width: 18px;
+                }
+
+                .print {
+                    color: #ffffff;
+                    margin-left: 50%;
                 }
             }
         }

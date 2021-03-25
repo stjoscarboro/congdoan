@@ -4,13 +4,14 @@ require('../resources/js/parish-service.js');
 require('./signup.scss');
 
 (() => {
-    const controller = ($scope, $q, service, apputil) => {
+    const controller = ($scope, $q, $window, service, apputil) => {
         /**
          * init
          */
         $scope.init = () => {
             $scope.total = 120;
             $scope.formData = {};
+            $scope.listIndex = 0;
 
             //handle browser refresh
             refresh();
@@ -92,7 +93,7 @@ require('./signup.scss');
                     Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        if(data.name && item.name === data.name || data.email && item.email === data.email || data.phone && item.phone === data.phone) {
+                        if(data.email && item.email === data.email || data.name && item.name === data.name || data.phone && item.phone === data.phone) {
                             Object.assign(data, apputil.pick(item, 'email', 'count'));
                             data.name !== '' && Object.assign(data, apputil.pick(item, 'name'));
                             data.phone !== '' && Object.assign(data, apputil.pick(item, 'phone'));
@@ -110,8 +111,27 @@ require('./signup.scss');
                         }
                     });
                 });
+
+                //trigger input events
+                $('.content .name').trigger('oninput');
+                $('.content .email').trigger('oninput');
+                $('.content .count').trigger('oninput');
             }
         };
+
+        $scope.prevList = () => {
+            $scope.listIndex > 0 && ($scope.listIndex -= 1);
+            $('html').scrollTop(0, 0);
+        };
+
+        $scope.nextList = () => {
+            $scope.listIndex < $scope.signups.length - 1 && ($scope.listIndex += 1);
+            $('html').scrollTop(0, 0);
+        };
+
+        /*****************/
+        /**** private ****/
+        /*****************/
 
         const loadSignups = () => {
             service.loadSignups()
@@ -132,7 +152,7 @@ require('./signup.scss');
             }
 
             //handle back button refresh
-            window.onhashchange = (e) => {
+            $window.addEventListener('hashchange', (e) => {
                 if(!$scope.signups) {
                     loadSignups();
                 } else {
@@ -144,11 +164,11 @@ require('./signup.scss');
                         });
                     }
                 }
-            };
+            });
         };
     };
 
-    controller.$inject = ['$scope', '$q', 'ParishService', 'AppUtil'];
+    controller.$inject = ['$scope', '$q', '$window', 'ParishService', 'AppUtil'];
     app.controller("thanhle", controller);
 })();
 

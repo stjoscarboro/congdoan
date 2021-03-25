@@ -1,22 +1,5 @@
 <div class="signup">
-    <div class="intro">
-        <p>
-            Theo thông báo từ chính phủ Ontario và Toà Tổng Giám Mục Giáo Phận Toronto, vì tình hình dịch bệnh hiện
-            nay nên các nhà thờ thuộc vùng Toronto sẽ giới hạn số người tham dự trong các thánh lễ là <b><u>15%</u></b>
-            tổng số ghế ngồi. Do vậy nhà thờ St. Rose of Lima, Scarborough sẽ giới hạn số người tham dự trong các thánh
-            lễ là <b><u>{{total}}</u></b> người.
-        </p>
-
-        <p>
-            Nếu quý vị muốn tham dự thánh lễ trong các ngày dưới đây, xin điền vào <b><u>email</u></b> và số người sẽ
-            tham dự trong mỗi thánh lễ.
-        </p>
-
-        <p>
-            Nếu quý vị muốn thay đổi số người tham dự, xin cũng điền vào <b><u>email</u></b> và thay đổi số người tham
-            dự, hoặc <b><u>0</u></b> nếu không thể tham dự.
-        </p>
-    </div>
+    <ng-include src="'./intro.html'"></ng-include>
 
     <form role="form" ng-submit="submit()" class="content">
         <div class="form1">
@@ -24,8 +7,8 @@
                 <label class="col-sm-4 control-label">Tên:</label>
 
                 <div class="col-sm-6">
-                    <input type="text" ng-model="formData[signup.date].name" class="form-control" required ng-blur="checkSignup(signup.date)"
-                           oninvalid="this.setCustomValidity('Xin quý vị nhập tên.')" oninput="this.setCustomValidity('')" />
+                    <input type="text" ng-model="formData[signup.date].name" class="form-control name" required ng-blur="checkSignup(signup.date)"
+                           oninvalid="this.setCustomValidity('Xin quý vị vui lòng nhập tên.')" oninput="this.setCustomValidity('')" />
                 </div>
             </div>
 
@@ -33,7 +16,7 @@
                 <label class="col-sm-4 control-label">Địa chỉ email:</label>
 
                 <div class="col-sm-6">
-                    <input type="email" ng-model="formData[signup.date].email" class="form-control" required ng-blur="checkSignup(signup.date)"
+                    <input type="email" ng-model="formData[signup.date].email" class="form-control email" required ng-blur="checkSignup(signup.date)"
                            oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')" />
                 </div>
             </div>
@@ -42,7 +25,7 @@
                 <label class="col-sm-4 control-label">Số điện thoại:</label>
 
                 <div class="col-sm-3">
-                    <input type="text" ng-model="formData[signup.date].phone" class="form-control" ui-mask="(999) 999-9999" ng-blur="checkSignup(signup.date)" />
+                    <input type="text" ng-model="formData[signup.date].phone" class="form-control phone" ui-mask="(999) 999-9999" ng-blur="checkSignup(signup.date)" />
                 </div>
             </div>
         </div>
@@ -61,7 +44,7 @@
                     <label class="col-sm-4 control-label">Số người tham dự:</label>
 
                     <div class="col-sm-2">
-                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control"
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control count"
                                oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')" />
                     </div>
                     <!--<div style="display: inline-flex; padding-top: 2px;">(hoặc số 0 để xoá)</div>-->
