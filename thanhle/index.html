@@ -12,9 +12,10 @@
 <body ng-app="angular-app" ng-controller="thanhle" ng-init="init()" class="thanhle" data-scrolltop>
 
 <div id="main" class="main" ng-hide>
+    <div class="loader" data-loading></div>
     <div class="container">
         <ng-include src="'./header.html'"></ng-include>
-        <div ng-view></div>
+        <div ng-view ng-hide="signups.length == 0"></div>
     </div>
 </div>
 

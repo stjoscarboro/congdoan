@@ -170,6 +170,10 @@ require('./signup.scss');
                             }
                         });
                     }
+
+                    if((/\/summary$/).test(e.newURL) && !$scope.signupData) {
+                        location.hash = '/signup';
+                    }
                 }
             });
         };
