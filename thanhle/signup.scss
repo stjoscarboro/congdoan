@@ -23,7 +23,7 @@ html, body {
     }
 
     .container {
-        width: 820px;
+        width: 980px;
         margin: 0 auto;
         text-align: justify;
 
@@ -50,7 +50,15 @@ html, body {
             }
         }
 
+        .intro {
+            width: 820px;
+            margin: 0 auto;
+        }
+
         .signup {
+            width: 720px;
+            margin: 0 auto;
+
             .content {
                 width: 720px;
                 margin: 30px auto 20px auto;
@@ -89,7 +97,7 @@ html, body {
 
         .list {
             width: 940px;
-            margin-left: -75px;
+            margin: 0 auto;
 
             .table {
                 margin: 0 auto 10px auto;
@@ -121,21 +129,29 @@ html, body {
                 }
 
                 .phone {
-                    width: 150px;
+                    width: 160px;
                 }
             }
 
             .nav {
-                display: inline-block;
-                width: 100%;
+                position: absolute;
+                left: 50%;
 
                 .prev, .next {
                     color: #f0f0f0;
                     cursor: pointer;
                 }
 
-                .next {
-                    float: right;
+                .disabled {
+                    opacity: 0.5;
+                    cursor: default;
+                }
+
+                .unselectable {
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
                 }
             }
         }

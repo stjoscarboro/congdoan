@@ -12,6 +12,8 @@ require('./signup.scss');
             $scope.total = 120;
             $scope.formData = {};
             $scope.listIndex = 0;
+            $scope.signups = [];
+            $scope.nav = {};
 
             //handle browser refresh
             refresh();
@@ -120,13 +122,15 @@ require('./signup.scss');
         };
 
         $scope.prevList = () => {
-            $scope.listIndex > 0 && ($scope.listIndex -= 1);
             $('html').scrollTop(0, 0);
+            $scope.listIndex > 0 && ($scope.listIndex -= 1);
+            renderNav();
         };
 
         $scope.nextList = () => {
             $scope.listIndex < $scope.signups.length - 1 && ($scope.listIndex += 1);
             $('html').scrollTop(0, 0);
+            renderNav();
         };
 
         /*****************/
@@ -138,6 +142,9 @@ require('./signup.scss');
                 .then(values => {
                     $scope.signups = values;
 
+                    //render nav bar
+                    renderNav();
+
                     //handle default page
                     if(!(/\/(signup|list)$/).test(location.hash)) {
                         location.hash = '/signup';
@@ -147,7 +154,7 @@ require('./signup.scss');
 
         const refresh = () => {
             //handle browser refresh
-            if(!$scope.signups) {
+            if(!$scope.signups || $scope.signups.length === 0) {
                 loadSignups();
             }
 
@@ -165,6 +172,11 @@ require('./signup.scss');
                     }
                 }
             });
+        };
+
+        const renderNav = () => {
+            $scope.nav.prev = $scope.listIndex === 0 ? 'disabled' : '';
+            $scope.nav.next = $scope.listIndex === $scope.signups.length - 1 ? 'disabled' : '';
         };
     };
 

@@ -1,4 +1,9 @@
 <div class="list">
+    <div class="nav no-print">
+        <span ng-click="prevList()" ng-class="[nav.prev]" class="prev unselectable"><i class="glyphicon glyphicon-arrow-left"></i></span>
+        <span ng-click="nextList()" ng-class="[nav.next]" class="next unselectable"><i class="glyphicon glyphicon-arrow-right"></i></span>
+    </div>
+
     <div ng-repeat="signup in signups track by $index" ng-show="listIndex == $index">
         <div class="liturgy">
             {{formatDate(signup.date, signup.liturgy)}}
@@ -25,11 +30,6 @@
                 <td class="count">{{entry.count}}</td>
             </tr>
         </table>
-
-        <div class="nav no-print">
-            <span ng-click="prevList()" class="prev"><i class="glyphicon glyphicon-arrow-left"></i></span>
-            <span ng-click="nextList()" class="next"><i class="glyphicon glyphicon-arrow-right"></i></span>
-        </div>
     </div>
 
     <div class="footer">&nbsp;</div>
