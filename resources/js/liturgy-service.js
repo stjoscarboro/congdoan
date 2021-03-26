@@ -22,6 +22,10 @@ require('./airtable-service.js');
 
                     intentions: {
                         fields: [ 'id', 'name', 'date_a', 'date_b', 'date_c' ]
+                    },
+
+                    cached: {
+                        fields: [ 'date', 'data1', 'data2' ]
                     }
                 }
             };
@@ -48,6 +52,25 @@ require('./airtable-service.js');
          * @returns {f}
          */
         service.loadLiturgies = () => {
+            let deferred = $q.defer();
+
+            loadCachedData()
+                .then(cachedData => {
+                    if(cachedData && cachedData.records.length > 0) {
+                        deferred.resolve(cachedData.records);
+                    } else {
+                        loadSourceData()
+                            .then(records => {
+                                saveCachedData(cachedData, records);
+                                deferred.resolve(records);
+                            });
+                    }
+            });
+
+            return deferred.promise;
+        };
+
+        const loadSourceData = () => {
             let deferred = $q.defer(),
                 years = { a: '1', b: '2', c: '3' };
 
@@ -101,6 +124,51 @@ require('./airtable-service.js');
                 });
 
             return deferred.promise;
+        };
+
+        const loadCachedData = () => {
+            let deferred = $q.defer(),
+                date = new Date(),
+                time = 43200000, //12h
+                result = { records: [] };
+
+            AirtableService.getData('cached', config)
+                .then(data => {
+                    if(data && data.length > 0) {
+                        data = data[0];
+                        result.refId = data.refId;
+                        result.date = data['date'];
+
+                        if(date.getTime() - data.date.getTime() < time) {
+                            result.records = JSON.parse(data['data1'] + data['data2']);
+                            result.records.forEach(record => {
+                                record.date = new Date(Date.parse(record['date']));
+                            });
+                        }
+                    }
+
+                    deferred.resolve(result);
+                });
+
+            return deferred.promise;
+        };
+
+        const saveCachedData = (cachedData, records) => {
+            let payload = getPayload(records);
+            AirtableService.updateData('cached', config, cachedData.refId, payload);
+        };
+
+        const getPayload = (records) => {
+            let data = JSON.stringify(records),
+                split = 80000;
+
+            return {
+                fields: {
+                    date: new Date(),
+                    data1: data.substring(0, split),
+                    data2: data.substring(split)
+                }
+            }
         };
 
         return service;
