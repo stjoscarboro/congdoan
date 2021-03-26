@@ -88,8 +88,8 @@ html, body {
         }
 
         .list {
-            width: 1000px;
-            margin-left: -105px;
+            width: 940px;
+            margin-left: -75px;
 
             .table {
                 margin: 0 auto 10px auto;
@@ -110,8 +110,8 @@ html, body {
                     }
                 }
 
-                .order {
-                    width: 120px;
+                .order, .count {
+                    width: 110px;
                     text-align: center;
                 }
 
@@ -121,12 +121,7 @@ html, body {
                 }
 
                 .phone {
-                    width: 160px;
-                }
-
-                .count {
-                    width: 120px;
-                    text-align: center;
+                    width: 150px;
                 }
             }
 
@@ -134,21 +129,13 @@ html, body {
                 display: inline-block;
                 width: 100%;
 
-                .prev {
+                .prev, .next {
                     color: #f0f0f0;
-                    float: left;
-                    width: 18px;
+                    cursor: pointer;
                 }
 
                 .next {
-                    color: #f0f0f0;
                     float: right;
-                    width: 18px;
-                }
-
-                .print {
-                    color: #ffffff;
-                    margin-left: 50%;
                 }
             }
         }
@@ -157,6 +144,12 @@ html, body {
     @media only screen and (max-device-height : 1024px) and (orientation: portrait) {
         .container {
             width: 90%;
+        }
+    }
+
+    @media print {
+        .no-print, .no-print * {
+            display: none !important;
         }
     }
 }
