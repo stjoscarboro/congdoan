@@ -36,7 +36,7 @@ const { app } = require('./angular-app.js');
                             config.tables[table].fields.forEach(field => {
                                 switch(true) {
                                     case field.startsWith('date'):
-                                        value[field] = parseDate(record.fields[field]);
+                                        value[field] = service.parseDate(record.fields[field]);
                                         break;
 
                                     case Array.isArray(record.fields[field]):
@@ -191,7 +191,7 @@ const { app } = require('./angular-app.js');
          *
          * @returns {Date}
          */
-        let parseDate = (value) => {
+        service.parseDate = (value) => {
             return new Date(Date.parse(value));
         };
 

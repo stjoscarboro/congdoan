@@ -81,7 +81,7 @@ require('./airtable-service.js');
             let deferred = $q.defer(),
                 years = { a: '1', b: '2', c: '3' };
 
-            let getIntention = (intentions, date) => {
+            const getIntention = (intentions, date) => {
                 let intention = null;
 
                 intentions.find(i => {
@@ -144,12 +144,12 @@ require('./airtable-service.js');
                     if(data && data.length > 0) {
                         data = data[0];
                         result.refId = data.refId;
-                        result.date = data['date'];
+                        result.date = data.date;
 
-                        if(date.getTime() - data.date.getTime() < time) {
+                        if(data.date && date.getTime() - data.date.getTime() < time) {
                             result.records = JSON.parse(data['data1'] + data['data2']);
                             result.records.forEach(record => {
-                                record.date = new Date(Date.parse(record['date']));
+                                record.date = AirtableService.parseDate(record['date']);
                             });
                         }
                     }
@@ -167,7 +167,7 @@ require('./airtable-service.js');
 
         const getPayload = (records) => {
             let data = JSON.stringify(records),
-                split = 80000;
+                split = 100000;
 
             return {
                 fields: {
