@@ -193,15 +193,15 @@ require('./signup.scss');
         const context = location.pathname.split('/')[1];
 
         $routeProvider.
-        when('/summary', {
-            templateUrl: `/${context}/thanhle/summary.html`
-        }).
-        when('/list', {
-            templateUrl: `/${context}/thanhle/list.html`
-        }).
-        otherwise({
-            templateUrl: `/${context}/thanhle/signup.html`
-        });
+            when('/summary', {
+                templateUrl: `/${context}/thanhle/summary.html`
+            }).
+            when('/list', {
+                templateUrl: `/${context}/thanhle/list.html`
+            }).
+            otherwise({
+                templateUrl: `/${context}/thanhle/signup.html`
+            });
 
         $locationProvider.hashPrefix('');
     };
