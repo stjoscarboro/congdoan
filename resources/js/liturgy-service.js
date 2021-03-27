@@ -49,19 +49,21 @@ require('./airtable-service.js');
         /**
          * loadLiturgies
          *
+         * @param cached
          * @returns {f}
          */
-        service.loadLiturgies = () => {
+        service.loadLiturgies = (cached) => {
             let deferred = $q.defer();
+            cached = cached === false ? cached : true;
 
             loadCachedData()
-                .then(cachedData => {
-                    if(cachedData && cachedData.records.length > 0) {
-                        deferred.resolve(cachedData.records);
+                .then(data => {
+                    if(cached && data && data.records.length > 0) {
+                        deferred.resolve(data.records);
                     } else {
                         loadSourceData()
                             .then(records => {
-                                saveCachedData(cachedData, records);
+                                saveCachedData(data, records);
                                 deferred.resolve(records);
                             });
                     }
@@ -69,6 +71,11 @@ require('./airtable-service.js');
 
             return deferred.promise;
         };
+
+
+        /*****************/
+        /**** private ****/
+        /*****************/
 
         const loadSourceData = () => {
             let deferred = $q.defer(),
