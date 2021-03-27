@@ -16,3 +16,9 @@
         dự, hoặc để trống nếu không thể tham dự.
     </p>
 </div>
+
+<script>
+    (() => {
+        !location.hash && (location.href = '/congdoan/thanhle/#/signup');
+    })();
+</script>
