@@ -5,7 +5,7 @@ require('./airtable-service.js');
 require('./liturgy-service.js');
 
 (() => {
-    const factory = ($q, $http, AirtableService, LiturgyService) => {
+    const factory = ($q, $http, AirtableService, LiturgyService, AppUtil) => {
 
         let service = {},
             config = {
@@ -65,8 +65,8 @@ require('./liturgy-service.js');
         };
 
         const getPayload = (signup) => {
-            signup.data.forEach(item => {
-                delete item['$$hashKey'];
+            signup.data = signup.data.map(item => {
+                return AppUtil.pick(item, 'name', 'email', 'phone', 'count');
             });
 
             // console.log(`data length: ${JSON.stringify(signup.data).length}`);
@@ -83,6 +83,6 @@ require('./liturgy-service.js');
 
     };
 
-    factory.$inject = ['$q', '$http', 'AirtableService', 'LiturgyService'];
+    factory.$inject = ['$q', '$http', 'AirtableService', 'LiturgyService', 'AppUtil'];
     app.factory('ParishService', factory);
 })();
