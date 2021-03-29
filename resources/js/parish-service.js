@@ -74,7 +74,8 @@ require('./liturgy-service.js');
                 fields: {
                     date: signup.date,
                     active: Boolean(signup.active),
-                    data: JSON.stringify(signup.data)
+                    data: JSON.stringify(signup.data),
+                    liturgy: signup.liturgy
                 }
             }
         };
