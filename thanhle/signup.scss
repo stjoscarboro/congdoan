@@ -81,6 +81,12 @@ html, body {
                         height: 30px;
                         font-size: 16px;
                     }
+
+                    .form-error {
+                        display: inline-flex;
+                        padding-top: 2px;
+                        color: #ff4500;
+                    }
                 }
 
                 .form2 {
@@ -92,6 +98,12 @@ html, body {
             .submit {
                 text-align: right;
                 margin-top: 20px;
+
+                .disabled {
+                    opacity: 0.5;
+                    cursor: default;
+                    pointer-events: none;
+                }
             }
         }
 
@@ -151,6 +163,7 @@ html, body {
                 .disabled {
                     opacity: 0.5;
                     cursor: default;
+                    pointer-events: none;
                 }
 
                 .unselectable {

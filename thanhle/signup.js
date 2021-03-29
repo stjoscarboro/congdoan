@@ -125,6 +125,28 @@ require('./signup.scss');
             }
         };
 
+        $scope.checkLimit = () => {
+            const checkLimit = true;
+
+            if(checkLimit) {
+                $scope.disableSave = '';
+
+                $scope.signups.forEach(signup => {
+                    let date = signup.date,
+                        data = $scope.formData[date],
+                        remaining = $scope.getRemaining(date);
+
+                    if(data) {
+                        data.error = null;
+                        if(data.count > remaining) {
+                            data.error = `Không còn đủ chỗ cho ${data.count} người`;
+                            $scope.disableSave = 'disabled';
+                        }
+                    }
+                });
+            }
+        };
+
         $scope.prevList = () => {
             $('html').scrollTop(0, 0);
             $scope.listIndex > 0 && ($scope.listIndex -= 1);

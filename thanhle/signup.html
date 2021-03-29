@@ -45,16 +45,16 @@
                     <label class="col-sm-4 control-label">Số người tham dự:</label>
 
                     <div class="col-sm-2">
-                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control count"
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control count" ng-blur="checkLimit()"
                                oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')" />
                     </div>
-                    <!--<div style="display: inline-flex; padding-top: 2px;">(hoặc số 0 để xoá)</div>-->
+                    <div class="form-error" ng-show="formData[signup.date].error">{{formData[signup.date].error}}</div>
                 </div>
             </div>
         </div>
 
         <div class="submit">
-            <button class="btn btn-primary" type="submit">Ghi Tên</button>
+            <button class="btn btn-primary" type="submit" ng-class="disableSave">Ghi Tên</button>
         </div>
     </form>
 
