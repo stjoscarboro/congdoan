@@ -15,8 +15,7 @@ require('./signup.scss');
             $scope.signups = [];
             $scope.nav = {};
 
-            //handle browser refresh
-            refresh();
+            initForm();
         };
 
         /**
@@ -26,48 +25,53 @@ require('./signup.scss');
             let promises = [];
             $scope.signupData = [];
 
-            $scope.signups.forEach(signup => {
-                let date = signup.date,
-                    data = $scope.formData[date],
-                    item = signup.data.find(item => item.email === data.email);
+            service.loadSignups()
+                .then(values => {
+                    $scope.signups = values;
 
-                if(!item) {
-                    item = apputil.pick(data, 'name', 'email', 'phone', 'count');
-                    item.order = signup.data.length + 1;
-                    signup.data.push(item);
-                } else {
-                    item.name = data.name;
-                    item.phone = data.phone;
-                    item.count = data.count;
-                }
+                    $scope.signups.forEach(signup => {
+                        let date = signup.date,
+                            data = $scope.formData[date],
+                            item = signup.data.find(item => item.email === data.email);
 
-                promises.push(
-                    service.updateSignup(signup)
-                        .then(() => {
-                            if(item.count > 0) {
-                                Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
-                                $scope.signupData.push(item);
-                            }
-                        })
-                );
-            });
+                        if(!item) {
+                            item = apputil.pick(data, 'name', 'email', 'phone', 'count');
+                            item.order = signup.data.length + 1;
+                            signup.data.push(item);
+                        } else {
+                            item.name = data.name;
+                            item.phone = data.phone;
+                            item.count = data.count;
+                        }
 
-            $q.all(promises)
-                .then(() => {
-                    $scope.signupData.sort((o1, o2) => {
-                        let d1 = o1.date, d2 = o2.date;
-                        return d1.getTime() < d2.getTime() ? -1 : 1;
+                        promises.push(
+                            service.updateSignup(signup)
+                                .then(() => {
+                                    if(item.count > 0) {
+                                        Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
+                                        $scope.signupData.push(item);
+                                    }
+                                })
+                        );
                     });
 
-                    location.hash = '/summary';
+                    $q.all(promises)
+                        .then(() => {
+                            $scope.signupData.sort((o1, o2) => {
+                                let d1 = o1.date, d2 = o2.date;
+                                return d1.getTime() < d2.getTime() ? -1 : 1;
+                            });
+
+                            location.hash = '/summary';
+                        });
                 });
         };
 
         $scope.formatDate = (date, liturgy) => {
             let time = date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'});
-            date = $.datepicker.formatDate('DD dd/mm/yy', date);
+            date = $.datepicker.formatDate('dd/mm/yy', date);
 
-            return `${date} @${time}`;
+            return `${date} @${time} - ${liturgy}`;
         };
 
         $scope.formatPhone = (phone) => {
@@ -137,22 +141,7 @@ require('./signup.scss');
         /**** private ****/
         /*****************/
 
-        const loadSignups = () => {
-            service.loadSignups()
-                .then(values => {
-                    $scope.signups = values;
-
-                    //render nav bar
-                    renderNav();
-
-                    //handle default page
-                    if(!(/\/(signup|list)$/).test(location.hash)) {
-                        location.hash = '/signup';
-                    }
-                });
-        };
-
-        const refresh = () => {
+        const initForm = () => {
             //handle browser refresh
             if(!$scope.signups || $scope.signups.length === 0) {
                 loadSignups();
@@ -176,6 +165,21 @@ require('./signup.scss');
                     }
                 }
             });
+        };
+
+        const loadSignups = () => {
+            service.loadSignups()
+                .then(values => {
+                    $scope.signups = values;
+
+                    //render nav bar
+                    renderNav();
+
+                    //handle default page
+                    if(!(/\/(signup|list)$/).test(location.hash)) {
+                        location.hash = '/signup';
+                    }
+                });
         };
 
         const renderNav = () => {
