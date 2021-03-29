@@ -135,7 +135,7 @@ const { app } = require('./angular-app.js');
 
             $http({
                 url: `${config.url}/${table}/${refId}?api_key=${config.key}`,
-                method: 'PUT',
+                method: 'PATCH',
                 data: data
             })
                 .then(

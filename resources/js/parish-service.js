@@ -57,13 +57,9 @@ require('./liturgy-service.js');
                 return AppUtil.pick(item, 'name', 'email', 'phone', 'count', 'order');
             });
 
-            // console.log(`data length: ${JSON.stringify(signup.data).length}`);
             return {
                 fields: {
-                    date: signup.date,
-                    active: Boolean(signup.active),
-                    data: JSON.stringify(signup.data),
-                    liturgy: signup.liturgy
+                    data: JSON.stringify(signup.data)
                 }
             }
         };
