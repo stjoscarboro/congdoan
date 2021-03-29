@@ -42,6 +42,7 @@ require('./signup.scss');
                             item.name = data.name;
                             item.phone = data.phone;
                             item.count = data.count;
+                            !item.order && (item.order = signup.data.length + 1);
                         }
 
                         promises.push(
@@ -65,6 +66,25 @@ require('./signup.scss');
                             location.hash = '/summary';
                         });
                 });
+        };
+
+        $scope.delete = (date, entry) => {
+            if(confirm(`Are you sure to delete name: ${entry.name} and email: ${entry.email}?`)) {
+                service.loadSignups()
+                    .then(values => {
+                        $scope.signups = values;
+
+                        let signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
+
+                        signup.data.forEach((item, index) => {
+                            if(item.name === entry.name && item.email === entry.email) {
+                                signup.data.splice(index, 1);
+                            }
+                        });
+
+                        service.updateSignup(signup);
+                    });
+            }
         };
 
         $scope.formatDate = (date, liturgy) => {
@@ -99,7 +119,11 @@ require('./signup.scss');
                     Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        if(data.email && item.email === data.email || data.name && item.name === data.name || data.phone && item.phone === data.phone) {
+                        const matchedName = data.name && apputil.neutralize(item.name).toLowerCase() === apputil.neutralize(data.name).toLowerCase();
+                        const matchedEmail = data.email && item.email === data.email;
+                        const matchedPhone = data.phone && item.phone === data.phone;
+
+                        if(matchedName || matchedEmail || matchedPhone) {
                             Object.assign(data, apputil.pick(item, 'email', 'count'));
                             data.name !== '' && Object.assign(data, apputil.pick(item, 'name'));
                             data.phone !== '' && Object.assign(data, apputil.pick(item, 'phone'));
@@ -224,6 +248,9 @@ require('./signup.scss');
             }).
             when('/list', {
                 templateUrl: `/${context}/thanhle/list.html`
+            }).
+            when('/fulllist', {
+                templateUrl: `/${context}/thanhle/fulllist.html`
             }).
             otherwise({
                 templateUrl: `/${context}/thanhle/signup.html`

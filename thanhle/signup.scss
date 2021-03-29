@@ -149,6 +149,15 @@ html, body {
                 .phone {
                     width: 160px;
                 }
+
+                .delete {
+                    font-size: small;
+                    width: 12px;
+
+                    .glyphicon:hover {
+                        color: $default-font-color;
+                    }
+                }
             }
 
             .nav {

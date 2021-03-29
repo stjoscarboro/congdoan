@@ -1,0 +1,39 @@
+<script>(() => { !location.hash && (location.href = './#/fulllist'); })();</script>
+<div class="list">
+    <div class="nav no-print">
+        <span ng-click="prevList()" ng-class="[nav.prev]" class="prev unselectable"><i class="glyphicon glyphicon-arrow-left"></i></span>
+        <span ng-click="nextList()" ng-class="[nav.next]" class="next unselectable"><i class="glyphicon glyphicon-arrow-right"></i></span>
+    </div>
+
+    <div ng-repeat="signup in signups track by $index" ng-show="listIndex == $index">
+        <div class="liturgy">
+            {{formatDate(signup.date, signup.liturgy)}}
+
+            <div class="remaining">
+                Đã ghi tên: <b>{{total - getRemaining(signup.date)}}</b>, còn lại: <b>{{getRemaining(signup.date)}}</b>
+            </div>
+        </div>
+
+        <table class="table">
+            <tr class="header">
+                <td class="order">Số Thứ Tự</td>
+                <td class="name">Tên</td>
+                <td class="email">Email</td>
+                <td class="phone">Phone</td>
+                <td class="count">Số Người</td>
+                <td class="delete no-print"></td>
+            </tr>
+
+            <tr ng-repeat="entry in signup.data track by $index">
+                <td class="order">{{entry.order}}</td>
+                <td class="name">{{entry.name}}</td>
+                <td class="email">{{entry.email}}</td>
+                <td class="phone">{{formatPhone(entry.phone)}}</td>
+                <td class="count">{{entry.count}}</td>
+                <td class="delete no-print"><a href="" ng-click="delete(signup.date, entry)"><i class="glyphicon glyphicon-trash"></i></a></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">&nbsp;</div>
+</div>

@@ -101,6 +101,31 @@ module.exports = { app: app };
             });
         };
 
+        /**
+         * Removes accent chars for searching.
+         *
+         * @param data
+         * @return {*}
+         */
+        util.neutralize = (data) => {
+            return (data || '')
+                .replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, 'a')
+                .replace(/[ÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ]/g, 'A')
+                .replace(/[éèẻẽẹêếềểễệ]/g, 'e')
+                .replace(/[ÉÈẺẼẸÊẾỀỂỄỆ]/g, 'E')
+                .replace(/[íìỉĩị]/g, 'i')
+                .replace(/[ÍÌỈĨỊ]/g, 'I')
+                .replace(/[óòỏõọôốồổỗộơớờởỡợ]/g, 'o')
+                .replace(/[ÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢ]/g, 'O')
+                .replace(/[úùủũụưứừửữự]/g, 'u')
+                .replace(/[ÚÙỦŨỤƯỨỪỬỮỰ]/g, 'U')
+                .replace(/[ýỳỷỹỵ]/g, 'y')
+                .replace(/[ÝỲỶỸỴ]/g, 'Y')
+                .replace(/[đ]/g, 'd')
+                .replace(/[Đ]/g, 'D')
+                ;
+        };
+
         return util;
     };
 
