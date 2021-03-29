@@ -32,17 +32,24 @@ require('./signup.scss');
                     $scope.signups.forEach(signup => {
                         let date = signup.date,
                             data = $scope.formData[date],
-                            item = signup.data.find(item => item.email === data.email);
+                            item = signup.data.find(item => item.email === data.email),
+                            order = 0;
 
+                        //find last order number
+                        signup.data.forEach(item => {
+                            item.order > order && (order = item.order);
+                        });
+
+                        //apply data
                         if(!item) {
                             item = apputil.pick(data, 'name', 'email', 'phone', 'count');
-                            item.order = signup.data.length + 1;
+                            item.order = order + 1;
                             signup.data.push(item);
                         } else {
                             item.name = data.name;
                             item.phone = data.phone;
                             item.count = data.count;
-                            !item.order && (item.order = signup.data.length + 1);
+                            !item.order && (item.order = order + 1);
                         }
 
                         promises.push(
