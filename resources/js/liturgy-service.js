@@ -86,7 +86,7 @@ require('./airtable-service.js');
 
                 intentions.find(i => {
                     for(let y of Object.keys(years)) {
-                        if(i[`date_${ y }`].getTime() === date.getTime()) {
+                        if(i[`date_${y}`].getTime() === date.getTime()) {
                             intention = i;
                         }
                     }

@@ -14,7 +14,7 @@ require('./liturgy-service.js');
 
                 tables: {
                     mass: {
-                        fields: ['date', 'active', 'data']
+                        fields: ['date', 'active', 'data', 'liturgy']
                     }
                 }
             };
@@ -46,10 +46,10 @@ require('./liturgy-service.js');
                             result.push(signup);
 
                             //set liturgy
-                            const liturgy = liturgies.find(item => {
-                                return item.date.toLocaleDateString() === signup.date.toLocaleDateString();
-                            });
-                            liturgy && (signup.liturgy = liturgy);
+                            // const liturgy = liturgies.find(item => {
+                            //     return item.date.toLocaleDateString() === signup.date.toLocaleDateString();
+                            // });
+                            // liturgy && (signup.liturgy = liturgy);
                         }
                     });
 
