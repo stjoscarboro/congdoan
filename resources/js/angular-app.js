@@ -110,10 +110,7 @@ module.exports = { app: app };
          */
         util.neutralize = (data, trim) => {
             data = data || '';
-
-            if(trim) {
-                data = data.replaceAll(/\s*/g, '');
-            }
+            trim && (data = data.replaceAll(/\s*[&|-]/g, ''));
 
             return data
                 .replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, 'a')

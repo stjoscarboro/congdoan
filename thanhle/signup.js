@@ -118,7 +118,7 @@ require('./signup.scss');
                     Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        const matchedName = data.name && apputil.neutralize(item.name, true).toLowerCase() === apputil.neutralize(data.name, true).toLowerCase();
+                        const matchedName = data.name && apputil.neutralize(item.name, true).match(new RegExp(`${apputil.neutralize(data.name, true)}`, 'i'));
                         const matchedEmail = data.email && item.email === data.email;
                         const matchedPhone = data.phone && item.phone === data.phone;
 
