@@ -65,7 +65,7 @@ require('./signup.scss');
 
         $scope.formatDate = (date, liturgy) => {
             let time = date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'});
-            date = $.datepicker.formatDate('dd/mm/yy', date);
+            date = $.datepicker.formatDate('DD dd/mm/yy', date);
 
             // return `${date} @${time} ${liturgy ? `- ${liturgy.name}` : ''}`;
             return `${date} @${time}`;
