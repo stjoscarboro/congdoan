@@ -75,7 +75,6 @@ require('./signup.scss');
                         $scope.signups = values;
 
                         let signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
-
                         signup.data.forEach((item, index) => {
                             if(item.name === entry.name && item.email === entry.email) {
                                 signup.data.splice(index, 1);
@@ -119,7 +118,7 @@ require('./signup.scss');
                     Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        const matchedName = data.name && apputil.neutralize(item.name).toLowerCase() === apputil.neutralize(data.name).toLowerCase();
+                        const matchedName = data.name && apputil.neutralize(item.name, true).toLowerCase() === apputil.neutralize(data.name, true).toLowerCase();
                         const matchedEmail = data.email && item.email === data.email;
                         const matchedPhone = data.phone && item.phone === data.phone;
 

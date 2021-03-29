@@ -105,10 +105,17 @@ module.exports = { app: app };
          * Removes accent chars for searching.
          *
          * @param data
+         * @param trim
          * @return {*}
          */
-        util.neutralize = (data) => {
-            return (data || '')
+        util.neutralize = (data, trim) => {
+            data = data || '';
+
+            if(trim) {
+                data = data.replaceAll(/\s*/g, '');
+            }
+
+            return data
                 .replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, 'a')
                 .replace(/[ÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ]/g, 'A')
                 .replace(/[éèẻẽẹêếềểễệ]/g, 'e')
