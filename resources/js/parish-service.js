@@ -66,7 +66,7 @@ require('./liturgy-service.js');
 
         const getPayload = (signup) => {
             signup.data = signup.data.map(item => {
-                return AppUtil.pick(item, 'name', 'email', 'phone', 'count');
+                return AppUtil.pick(item, 'name', 'email', 'phone', 'count', 'order');
             });
 
             // console.log(`data length: ${JSON.stringify(signup.data).length}`);
