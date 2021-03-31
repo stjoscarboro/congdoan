@@ -34,14 +34,20 @@
             </ul>
         </div>
 
-        <p ng-if="!signupData[0].phone">
-            Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <b>{{signupData[0].email}}</b>.
-        </p>
+        <div ng-if="signupData[0].email || signupData[0].phone">
+            <p ng-if="signupData[0].email && signupData[0].phone">
+                Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <nobr><b>{{signupData[0].email}}</b></nobr>
+                hoặc số phone <nobr><b>{{formatPhone(signupData[0].phone)}}</b></nobr>.
+            </p>
 
-        <p ng-if="signupData[0].phone">
-            Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <b>{{signupData[0].email}}</b>
-            hoặc số phone <b>{{formatPhone(signupData[0].phone)}}</b>.
-        </p>
+            <p ng-if="signupData[0].email && !signupData[0].phone">
+                Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua địa chỉ email <nobr><b>{{signupData[0].email}}</b></nobr>.
+            </p>
+
+            <p ng-if="!signupData[0].email && signupData[0].phone">
+                Nếu có gì thay đổi, chúng tôi sẽ liên lạc với quý vị qua số phone <nobr><b>{{formatPhone(signupData[0].phone)}}</b></nobr>.
+            </p>
+        </div>
     </div>
 
     <p>

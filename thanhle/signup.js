@@ -133,9 +133,15 @@ require('./signup.scss');
                         const matchedPhone = formData.phone && item.phone === formData.phone;
 
                         if(matchedName || matchedEmail || matchedPhone) {
-                            formData.name !== '' && item.name && (formData.name = item.name);
-                            formData.email !== '' && item.email && (formData.email = item.email);
-                            formData.phone !== '' && item.phone && (formData.phone = item.phone);
+                            //only fill name when they don't exactly match after neutralized
+                            if(apputil.neutralize(item.name, true) !== apputil.neutralize(formData.name, true)) {
+                                formData.name = item.name;
+                            }
+
+                            //only fill when not populated
+                            formData.name  === undefined && (formData.name = item.name);
+                            formData.email === undefined && (formData.email = item.email);
+                            formData.phone === undefined && (formData.phone = item.phone);
                         }
                     });
                 });
