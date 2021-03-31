@@ -22,7 +22,9 @@ require('./signup.scss');
          * submit
          */
         $scope.submit = () => {
-            let promises = [];
+            let promises = [],
+                formData = $scope.formData;
+
             $scope.signupData = [];
 
             service.loadSignups()
@@ -32,7 +34,7 @@ require('./signup.scss');
                     $scope.signups.forEach(signup => {
                         let date = signup.date,
                             data = $scope.formData[date],
-                            item = signup.data.find(item => item.email === data.email),
+                            item = signup.data.find(item => data.name && item.name === data.name),
                             order = 0;
 
                         //find last order number
@@ -42,12 +44,14 @@ require('./signup.scss');
 
                         //apply data
                         if(!item) {
-                            item = apputil.pick(data, 'name', 'email', 'phone', 'count');
+                            item = apputil.pick(formData, 'name', 'email', 'phone');
+                            item.count = data.count;
                             item.order = order + 1;
                             signup.data.push(item);
                         } else {
-                            item.name = data.name;
-                            item.phone = data.phone;
+                            item.name = formData.name;
+                            item.email = formData.email;
+                            item.phone = formData.phone;
                             item.count = data.count;
                             !item.order && (item.order = order + 1);
                         }
@@ -115,35 +119,40 @@ require('./signup.scss');
             return remaining;
         };
 
-        $scope.checkSignup = (date) => {
-            let data = $scope.formData[date];
+        $scope.checkSignup = () => {
+            let formData = $scope.formData;
 
-            if(data) {
+            if(formData) {
                 //assign this formData
                 $scope.signups.forEach(signup => {
                     $scope.formData[signup.date] = {};
-                    Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
 
                     signup.data.forEach(item => {
-                        const matchedName = data.name && apputil.neutralize(item.name, true).match(new RegExp(`${apputil.neutralize(data.name, true)}`, 'i'));
-                        const matchedEmail = data.email && item.email === data.email;
-                        const matchedPhone = data.phone && item.phone === data.phone;
+                        const matchedName = formData.name && apputil.neutralize(item.name, true).match(new RegExp(`${apputil.neutralize(formData.name, true)}$`, 'i'));
+                        const matchedEmail = formData.email && item.email === formData.email;
+                        const matchedPhone = formData.phone && item.phone === formData.phone;
 
                         if(matchedName || matchedEmail || matchedPhone) {
-                            Object.assign(data, apputil.pick(item, 'email', 'count'));
-                            data.name !== '' && Object.assign(data, apputil.pick(item, 'name'));
-                            data.phone !== '' && Object.assign(data, apputil.pick(item, 'phone'));
+                            formData.name !== '' && item.name && (formData.name = item.name);
+                            formData.email !== '' && item.email && (formData.email = item.email);
+                            formData.phone !== '' && item.phone && (formData.phone = item.phone);
                         }
                     });
                 });
 
                 //assign all formData for this email
                 $scope.signups.forEach(signup => {
-                    Object.assign($scope.formData[signup.date], apputil.pick(data, 'name', 'email', 'phone'));
+                    $scope.formData[signup.date].name = formData.name;
+                    $scope.formData[signup.date].email = formData.email;
+                    $scope.formData[signup.date].phone = formData.phone;
 
                     signup.data.forEach(item => {
-                        if(item.email === $scope.formData[signup.date].email) {
-                            Object.assign($scope.formData[signup.date], apputil.pick(item, 'count'));
+                        let name = $scope.formData[signup.date].name,
+                            email = $scope.formData[signup.date].email,
+                            phone = $scope.formData[signup.date].phone;
+
+                        if(item.name && item.name === name || item.email && item.email === email || item.phone && item.phone === phone) {
+                            Object.assign($scope.formData[signup.date], apputil.pick(item, 'name', 'email', 'phone', 'count'));
                         }
                     });
                 });
@@ -206,9 +215,7 @@ require('./signup.scss');
                 } else {
                     if((/\/signup$/).test(e.newURL)) {
                         $scope.$apply(() => {
-                            if($scope.signupData && $scope.signupData.length > 0) {
-                                $scope.checkSignup($scope.signupData[0].date);
-                            }
+                            $scope.formData = {};
                         });
                     }
 
