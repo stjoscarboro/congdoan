@@ -9,7 +9,7 @@ require('./signup.scss');
          * init
          */
         $scope.init = () => {
-            $scope.total = 120;
+            $scope.total = 90;
             $scope.formData = {};
             $scope.listIndex = 0;
             $scope.signups = [];
