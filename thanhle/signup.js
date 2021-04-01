@@ -179,11 +179,13 @@ require('./signup.scss');
                 $scope.signups.forEach(signup => {
                     let date = signup.date,
                         data = $scope.formData[date],
+                        item = signup.data.find(item => data.name && item.name === data.name),
+                        count = item && item.count || 0,
                         remaining = $scope.getRemaining(date);
 
                     if(data) {
                         data.error = null;
-                        if(data.count > remaining) {
+                        if(data.count > remaining + count) {
                             data.error = `Không còn đủ chỗ cho ${data.count} người`;
                             $scope.disableSave = 'disabled';
                         }
