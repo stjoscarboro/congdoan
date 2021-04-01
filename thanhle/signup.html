@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div ng-repeat="signup in signups track by $index">
+        <div ng-repeat="signup in signups track by $index" ng-if="signup.allow">
             <div class="liturgy">
                 {{formatDate(signup.date, signup.liturgy)}}
 

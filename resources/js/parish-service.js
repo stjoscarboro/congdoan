@@ -25,6 +25,7 @@ require('./liturgy-service.js');
         service.loadSignups = () => {
             const deferred = $q.defer();
             const today = new Date();
+            const cutoff = 3 * 60 * 60 * 1000;
 
             AirtableService.getData('mass', config)
                 .then(signups => {
@@ -36,6 +37,7 @@ require('./liturgy-service.js');
                     let result = [];
                     signups.forEach(signup => {
                         if(signup.active && signup.date.getTime() > today.getTime()) {
+                            signup.allow = signup.date.getTime() - today.getTime() > cutoff;
                             signup.data = signup.data ? JSON.parse(signup.data) : [];
                             result.push(signup);
                         }
