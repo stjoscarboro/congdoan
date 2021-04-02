@@ -138,6 +138,12 @@ require('./signup.scss');
                             formData.name  === undefined && (formData.name = item.name);
                             formData.email === undefined && (formData.email = item.email);
                             formData.phone === undefined && (formData.phone = item.phone);
+                        } else {
+                            //reset fields when name is not defined
+                            if(formData.name === undefined && (formData.email === '' || formData.phone === '')) {
+                                formData.email = undefined;
+                                formData.phone = undefined;
+                            }
                         }
                     });
                 });
