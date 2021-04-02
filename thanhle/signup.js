@@ -27,10 +27,8 @@ require('./signup.scss');
 
             $scope.signupData = [];
 
-            service.loadSignups()
-                .then(values => {
-                    $scope.signups = values;
-
+            loadSignups()
+                .then(() => {
                     $scope.signups.forEach(signup => {
                         let date = signup.date,
                             data = $scope.formData[date],
@@ -59,7 +57,7 @@ require('./signup.scss');
                         promises.push(
                             service.updateSignup(signup)
                                 .then(() => {
-                                    if(item.count > 0) {
+                                    if(signup.allow && item.count > 0) {
                                         Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
                                         $scope.signupData.push(item);
                                     }
@@ -81,10 +79,8 @@ require('./signup.scss');
 
         $scope.delete = (date, entry) => {
             if(confirm(`Are you sure to delete name: ${entry.name} and email: ${entry.email}?`)) {
-                service.loadSignups()
-                    .then(values => {
-                        $scope.signups = values;
-
+                loadSignups()
+                    .then(() => {
                         let signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
                         signup.data.forEach((item, index) => {
                             if(item.name === entry.name && item.email === entry.email) {
@@ -196,13 +192,13 @@ require('./signup.scss');
 
         $scope.prevList = () => {
             $('html').scrollTop(0, 0);
-            $scope.listIndex > 0 && ($scope.listIndex -= 1);
+            $scope.listIndex = $scope.listIndex -= 1;
             renderNav();
         };
 
         $scope.nextList = () => {
-            $scope.listIndex < $scope.signups.length - 1 && ($scope.listIndex += 1);
             $('html').scrollTop(0, 0);
+            $scope.listIndex = $scope.listIndex += 1;
             renderNav();
         };
 
@@ -213,13 +209,13 @@ require('./signup.scss');
         const initForm = () => {
             //handle browser refresh
             if(!$scope.signups || $scope.signups.length === 0) {
-                loadSignups();
+                initSignups();
             }
 
             //handle back button refresh
             $window.addEventListener('hashchange', (e) => {
                 if(!$scope.signups) {
-                    loadSignups();
+                    initSignups();
                 } else {
                     if((/\/signup$/).test(e.newURL)) {
                         $scope.$apply(() => {
@@ -234,11 +230,9 @@ require('./signup.scss');
             });
         };
 
-        const loadSignups = () => {
-            service.loadSignups()
-                .then(values => {
-                    $scope.signups = values;
-
+        const initSignups = () => {
+            loadSignups()
+                .then(() => {
                     //render nav bar
                     renderNav();
 
@@ -249,17 +243,27 @@ require('./signup.scss');
                 });
         };
 
-        const renderNav = () => {
-            let listIndex = 0;
-            $scope.signups.forEach((signup, index) => {
-                if(signup.list && $scope.listIndex === 0) {
-                    $scope.listIndex = index;
-                    listIndex++;
-                }
-            });
+        const loadSignups = () => {
+            const deferred = $q.defer();
 
-            $scope.nav.prev = $scope.listIndex === 0 || $scope.listIndex === listIndex ? 'disabled' : '';
-            $scope.nav.next = $scope.listIndex === $scope.signups.length - 1 ? 'disabled' : '';
+            service.loadSignups()
+                .then(values => {
+                    $scope.signups = values;
+
+                    $scope.signuplist = values.reduce((p, v) => {
+                        v.list && p.push(v);
+                        return p;
+                    }, []);
+
+                    deferred.resolve();
+                });
+
+            return deferred.promise;
+        };
+
+        const renderNav = () => {
+            $scope.nav.prev = $scope.listIndex === 0 ? 'disabled' : '';
+            $scope.nav.next = $scope.listIndex === $scope.signuplist.length - 1 ? 'disabled' : '';
         };
     };
 
