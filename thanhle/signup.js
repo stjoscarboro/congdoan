@@ -125,7 +125,7 @@ require('./signup.scss');
             if(formData) {
                 //assign this formData
                 $scope.signups.forEach(signup => {
-                    $scope.formData[signup.date] = {};
+                    $scope.formData[signup.date] = $scope.formData[signup.date] || {};
 
                     signup.data.forEach(item => {
                         const matchedName = formData.name && apputil.neutralize(item.name, true).match(new RegExp(`${apputil.neutralize(formData.name, true)}$`, 'i'));
@@ -133,8 +133,8 @@ require('./signup.scss');
                         const matchedPhone = formData.phone && item.phone === formData.phone;
 
                         if(matchedName || matchedEmail || matchedPhone) {
-                            //only fill name when they don't exactly match after neutralized
-                            if(apputil.neutralize(item.name, true) !== apputil.neutralize(formData.name, true)) {
+                            //only fill name when both email and phone are empty
+                            if(!matchedEmail && !matchedPhone) {
                                 formData.name = item.name;
                             }
 
@@ -146,7 +146,7 @@ require('./signup.scss');
                     });
                 });
 
-                //assign all formData for this email
+                //assign all formData for this person
                 $scope.signups.forEach(signup => {
                     $scope.formData[signup.date].name = formData.name;
                     $scope.formData[signup.date].email = formData.email;
@@ -250,7 +250,15 @@ require('./signup.scss');
         };
 
         const renderNav = () => {
-            $scope.nav.prev = $scope.listIndex === 0 ? 'disabled' : '';
+            let listIndex = 0;
+            $scope.signups.forEach((signup, index) => {
+                if(signup.list && $scope.listIndex === 0) {
+                    $scope.listIndex = index;
+                    listIndex++;
+                }
+            });
+
+            $scope.nav.prev = $scope.listIndex === 0 || $scope.listIndex === listIndex ? 'disabled' : '';
             $scope.nav.next = $scope.listIndex === $scope.signups.length - 1 ? 'disabled' : '';
         };
     };

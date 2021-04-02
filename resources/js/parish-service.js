@@ -36,8 +36,9 @@ require('./liturgy-service.js');
 
                     let result = [];
                     signups.forEach(signup => {
-                        if(signup.active && signup.date.getTime() > today.getTime()) {
+                        if(signup.active) {
                             signup.allow = signup.date.getTime() - today.getTime() > cutoff;
+                            signup.list = signup.date.getTime() > today.getTime();
                             signup.data = signup.data ? JSON.parse(signup.data) : [];
                             result.push(signup);
                         }
