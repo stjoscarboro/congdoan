@@ -1,0 +1,62 @@
+<script>(() => { !location.hash && (location.href = './#/signup'); })();</script>
+<ng-include src="'./intro.html'"></ng-include>
+
+<div class="signup">
+    <form role="form" ng-submit="submit()" class="content">
+        <div class="form1">
+            <div class="form-group row">
+                <label class="col-sm-4 control-label">Tên:</label>
+
+                <div class="col-sm-6">
+                    <input type="text" ng-model="formData.name" class="form-control name" required ng-blur="checkSignup()"
+                           oninvalid="this.setCustomValidity('Xin quý vị vui lòng nhập tên.')" oninput="this.setCustomValidity('')" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 control-label">Địa chỉ email:</label>
+
+                <div class="col-sm-6">
+                    <input type="email" ng-model="formData.email" class="form-control email" ng-blur="checkSignup()"
+                           oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 control-label">Số điện thoại:</label>
+
+                <div class="col-sm-3">
+                    <input type="text" ng-model="formData.phone" class="form-control phone" ui-mask="(999) 999-9999" ng-blur="checkSignup()" />
+                </div>
+            </div>
+        </div>
+
+        <div ng-repeat="signup in signups track by $index" ng-if="signup.allow">
+            <div class="liturgy">
+                {{formatDate(signup.date, signup.liturgy)}}
+
+                <div class="remaining">
+                    Đã ghi tên: <b>{{total - getRemaining(signup.date)}}</b>, còn lại: <b>{{getRemaining(signup.date)}}</b>
+                </div>
+            </div>
+
+            <div class="form2">
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Số người tham dự:</label>
+
+                    <div class="col-sm-2">
+                        <input type="number" min="0" max="6" ng-model="formData[signup.date].count" class="form-control count" ng-blur="checkLimit()"
+                               oninvalid="this.setCustomValidity('Xin nhập số người tham dự từ 0 đến 6.')" oninput="this.setCustomValidity('')" />
+                    </div>
+                    <div class="form-error" ng-show="formData[signup.date].error">{{formData[signup.date].error}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="submit">
+            <button class="btn btn-primary" type="submit" ng-class="disableSave">Ghi Tên</button>
+        </div>
+    </form>
+
+    <div class="footer">&nbsp;</div>
+</div>

@@ -2,10 +2,9 @@ const { app } = require('./angular-app.js');
 const { airtable } = require('./app-secret.js');
 
 require('./airtable-service.js');
-require('./liturgy-service.js');
 
 (() => {
-    const factory = ($q, $http, AirtableService, LiturgyService, AppUtil) => {
+    const factory = ($q, $http, AirtableService, AppUtil) => {
 
         let service = {},
             config = {
@@ -29,20 +28,23 @@ require('./liturgy-service.js');
 
             AirtableService.getData('mass', config)
                 .then(signups => {
+                    let result = [], signup;
+
                     signups.sort((s1, s2) => {
                         let d1 = s1.date, d2 = s2.date;
                         return d1.getTime() < d2.getTime() ? -1 : d1.getTime() > d2.getTime() ? 1 : 0;
                     });
 
-                    let result = [];
-                    signups.forEach(signup => {
+                    for(let i=0; i<signups.length; i++) {
+                        signup = signups[i];
+
                         if(signup.active) {
                             signup.allow = signup.date.getTime() - today.getTime() > cutoff;
                             signup.list = signup.date.getTime() > today.getTime();
                             signup.data = signup.data ? JSON.parse(signup.data) : [];
                             result.push(signup);
                         }
-                    });
+                    }
 
                     deferred.resolve(result);
                 });
@@ -71,6 +73,6 @@ require('./liturgy-service.js');
 
     };
 
-    factory.$inject = ['$q', '$http', 'AirtableService', 'LiturgyService', 'AppUtil'];
+    factory.$inject = ['$q', '$http', 'AirtableService', 'AppUtil'];
     app.factory('ParishService', factory);
 })();

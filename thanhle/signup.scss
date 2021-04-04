@@ -69,7 +69,7 @@ html, body {
                 margin: 30px auto 20px auto;
 
                 .form1, .form2 {
-                    padding: 20px 20px 5px 20px;
+                    padding: 15px 15px 0 15px;
                     border: 1px solid $form-border-color;
                     border-radius: 5px;
 
@@ -80,6 +80,10 @@ html, body {
                     .form-control {
                         height: 30px;
                         font-size: 16px;
+
+                        &.phone {
+                            padding: 6px 8px;
+                        }
                     }
 
                     .form-error {
@@ -87,11 +91,6 @@ html, body {
                         padding-top: 2px;
                         color: #ff4500;
                     }
-                }
-
-                .form2 {
-                    margin-bottom: 20px;
-                    padding: 15px 15px 0 15px;
                 }
             }
 

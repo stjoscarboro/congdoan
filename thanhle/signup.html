@@ -3,34 +3,6 @@
 
 <div class="signup">
     <form role="form" ng-submit="submit()" class="content">
-        <div class="form1">
-            <div class="form-group row">
-                <label class="col-sm-4 control-label">Tên:</label>
-
-                <div class="col-sm-6">
-                    <input type="text" ng-model="formData.name" class="form-control name" required ng-blur="checkSignup()"
-                           oninvalid="this.setCustomValidity('Xin quý vị vui lòng nhập tên.')" oninput="this.setCustomValidity('')" />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-4 control-label">Địa chỉ email:</label>
-
-                <div class="col-sm-6">
-                    <input type="email" ng-model="formData.email" class="form-control email" ng-blur="checkSignup()"
-                           oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')" />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-4 control-label">Số điện thoại:</label>
-
-                <div class="col-sm-3">
-                    <input type="text" ng-model="formData.phone" class="form-control phone" ui-mask="(999) 999-9999" ng-blur="checkSignup()" />
-                </div>
-            </div>
-        </div>
-
         <div ng-repeat="signup in signups track by $index" ng-if="signup.allow">
             <div class="liturgy">
                 {{formatDate(signup.date, signup.liturgy)}}
@@ -41,6 +13,31 @@
             </div>
 
             <div class="form2">
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Tên:</label>
+
+                    <div class="col-sm-6">
+                        <input type="text" ng-model="formData.name" class="form-control name" required ng-blur="checkSignup()"
+                               oninvalid="this.setCustomValidity('Xin quý vị vui lòng nhập tên.')" oninput="this.setCustomValidity('')" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Địa chỉ email:</label>
+
+                    <div class="col-sm-6">
+                        <input type="email" ng-model="formData.email" class="form-control email" ng-blur="checkSignup()"
+                               oninvalid="this.setCustomValidity('Xin nhập địa chỉ email hợp lệ.')" oninput="this.setCustomValidity('')" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">Số điện thoại:</label>
+
+                    <div class="col-sm-3">
+                        <input type="text" ng-model="formData.phone" class="form-control phone" ui-mask="(999) 999-9999" ng-blur="checkSignup()" />
+                    </div>
+                </div>
                 <div class="form-group row">
                     <label class="col-sm-4 control-label">Số người tham dự:</label>
 

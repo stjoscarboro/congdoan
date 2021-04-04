@@ -29,41 +29,51 @@ require('./signup.scss');
 
             loadSignups()
                 .then(() => {
-                    $scope.signups.forEach(signup => {
-                        let date = signup.date,
+                    for(let i=0; i<$scope.signups.length; i++) {
+                        let signup = $scope.signups[i],
+                            date = signup.date,
                             data = $scope.formData[date],
-                            item = signup.data.find(item => data.name && item.name === data.name),
-                            order = 0;
+                            item, order = 0;
 
-                        //find last order number
-                        signup.data.forEach(item => {
-                            item.order > order && (order = item.order);
-                        });
+                        if(signup.allow) {
+                            //find item
+                            item = signup.data.find(item => {
+                                return data.name && item.name === data.name
+                                    || data.email && item.email === data.email
+                                    || data.phone && item.phone === data.phone
+                            });
 
-                        //apply data
-                        if(!item) {
-                            item = apputil.pick(formData, 'name', 'email', 'phone');
-                            item.count = data.count;
-                            item.order = order + 1;
-                            signup.data.push(item);
-                        } else {
-                            item.name = formData.name;
-                            item.email = formData.email;
-                            item.phone = formData.phone;
-                            item.count = data.count;
-                            !item.order && (item.order = order + 1);
+                            //find last order number
+                            for(let j=0; j<signup.data.length; j++) {
+                                const item = signup.data[j];
+                                item.order > order && (order = item.order);
+                            }
+
+                            //apply data
+                            if(!item) {
+                                item = apputil.pick(formData, 'name', 'email', 'phone');
+                                item.count = data.count;
+                                item.order = order + 1;
+                                signup.data.push(item);
+                            } else {
+                                item.name = formData.name;
+                                item.email = formData.email;
+                                item.phone = formData.phone;
+                                item.count = data.count;
+                                !item.order && (item.order = order + 1);
+                            }
+
+                            promises.push(
+                                service.updateSignup(signup)
+                                    .then(() => {
+                                        if(item.count > 0) {
+                                            Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
+                                            $scope.signupData.push(item);
+                                        }
+                                    })
+                            );
                         }
-
-                        promises.push(
-                            service.updateSignup(signup)
-                                .then(() => {
-                                    if(signup.allow && item.count > 0) {
-                                        Object.assign(item, apputil.pick(signup, 'date', 'liturgy'));
-                                        $scope.signupData.push(item);
-                                    }
-                                })
-                        );
-                    });
+                    }
 
                     $q.all(promises)
                         .then(() => {
@@ -82,11 +92,14 @@ require('./signup.scss');
                 loadSignups()
                     .then(() => {
                         let signup = $scope.signups.find(item => item.date.getTime() === date.getTime());
-                        signup.data.forEach((item, index) => {
-                            if(item.name === entry.name && item.email === entry.email) {
-                                signup.data.splice(index, 1);
+
+                        for(let j=0; j<signup.data.length; j++) {
+                            let item = signup.data[j];
+
+                            if(item.name === entry.name && item.email === entry.email && item.phone === entry.phone) {
+                                signup.data.splice(j, 1);
                             }
-                        });
+                        }
 
                         service.updateSignup(signup);
                     });
@@ -105,12 +118,12 @@ require('./signup.scss');
         };
 
         $scope.getRemaining = (date) => {
-            const signupDate = $scope.signups.find(item => item.date.getTime() === date.getTime());
+            let signup = $scope.signups.find(item => item.date.getTime() === date.getTime()),
+                remaining = $scope.total;
 
-            let remaining = $scope.total;
-            signupDate.data.forEach(item => {
-                remaining -= item.count || 0;
-            });
+            for(let j=0; j<signup.data.length; j++) {
+                remaining -= signup.data[j].count || 0;
+            }
 
             return remaining;
         };
@@ -119,51 +132,72 @@ require('./signup.scss');
             let formData = $scope.formData;
 
             if(formData) {
+                let matchedName = null, matchedEmail = null, matchedPhone = null,
+                    signup, item;
+
                 //assign this formData
-                $scope.signups.forEach(signup => {
+                for(let i=$scope.signups.length-1; i>=0; i--) {
+                    signup = $scope.signups[i];
                     $scope.formData[signup.date] = $scope.formData[signup.date] || {};
 
-                    signup.data.forEach(item => {
-                        const matchedName = formData.name && apputil.neutralize(item.name, true).match(new RegExp(`${apputil.neutralize(formData.name, true)}$`, 'i'));
-                        const matchedEmail = formData.email && item.email === formData.email;
-                        const matchedPhone = formData.phone && item.phone === formData.phone;
+                    if(matchedName === null && matchedEmail === null && matchedPhone === null) {
+                        for(let j=0; j<signup.data.length; j++) {
+                            item = signup.data[j];
+                            const itemName = apputil.neutralize(item.name, true);
+                            const formName = formData.name && apputil.neutralize(formData.name, true) || null;
 
-                        if(matchedName || matchedEmail || matchedPhone) {
-                            //only fill name when both email and phone are empty
-                            if(!matchedEmail && !matchedPhone) {
-                                formData.name = item.name;
-                            }
+                            matchedName = formData.name && itemName.match(new RegExp(`${formName}$`, 'i'));
+                            matchedEmail = formData.email && item.email === formData.email || null;
+                            matchedPhone = formData.phone && item.phone === formData.phone || null;
 
-                            //only fill when not populated
-                            formData.name  === undefined && (formData.name = item.name);
-                            formData.email === undefined && (formData.email = item.email);
-                            formData.phone === undefined && (formData.phone = item.phone);
-                        } else {
-                            //reset fields when name is not defined
-                            if(formData.name === undefined && (formData.email === '' || formData.phone === '')) {
-                                formData.email = undefined;
-                                formData.phone = undefined;
+                            if(matchedName || matchedEmail || matchedPhone) {
+                                //only fill name when both email and phone are empty
+                                if(!matchedEmail && !matchedPhone) {
+                                    formData.name = item.name;
+                                }
+
+                                //only fill when not populated
+                                formData.name  === undefined && (formData.name = item.name);
+                                formData.email === undefined && (formData.email = item.email);
+                                formData.phone === undefined && (formData.phone = item.phone);
+                            } else {
+                                //reset fields when name is not defined
+                                if(formData.name === undefined) {
+                                    formData.email === '' && (formData.email = undefined);
+                                    formData.phone === '' && (formData.phone = undefined);
+                                }
                             }
                         }
-                    });
-                });
+                    }
+                }
 
-                //assign all formData for this person
-                $scope.signups.forEach(signup => {
-                    $scope.formData[signup.date].name = formData.name;
-                    $scope.formData[signup.date].email = formData.email;
-                    $scope.formData[signup.date].phone = formData.phone;
+                //assign all formData
+                for(let i=$scope.signups.length-1; i>=0; i--) {
+                    signup = $scope.signups[i];
 
-                    signup.data.forEach(item => {
-                        let name = $scope.formData[signup.date].name,
-                            email = $scope.formData[signup.date].email,
-                            phone = $scope.formData[signup.date].phone;
-
-                        if(item.name && item.name === name || item.email && item.email === email || item.phone && item.phone === phone) {
-                            Object.assign($scope.formData[signup.date], apputil.pick(item, 'name', 'email', 'phone', 'count'));
+                    if(signup.allow) {
+                        //no match then reset counts
+                        if(matchedName === null && matchedEmail === null && matchedPhone === null) {
+                            for(let i=$scope.signups.length-1; i>=0; i--) {
+                                $scope.formData[signup.date].count = null;
+                            }
                         }
-                    });
-                });
+
+                        for(let j=0; j<signup.data.length; j++) {
+                            item = signup.data[j];
+                            const matchedName = item.name && item.name === formData.name;
+                            const matchedEmail = item.email && item.email === formData.email;
+                            const matchedPhone = item.phone && item.phone === formData.phone;
+
+                            if(matchedName || matchedEmail || matchedPhone) {
+                                $scope.formData[signup.date].name = formData.name;
+                                $scope.formData[signup.date].email = formData.email;
+                                $scope.formData[signup.date].phone = formData.phone;
+                                $scope.formData[signup.date].count = item.count;
+                            }
+                        }
+                    }
+                }
 
                 //trigger input events
                 $('.content .name').trigger('oninput');
@@ -178,21 +212,31 @@ require('./signup.scss');
             if(checkLimit) {
                 $scope.disableSave = '';
 
-                $scope.signups.forEach(signup => {
-                    let date = signup.date,
-                        data = $scope.formData[date],
-                        item = signup.data.find(item => data.name && item.name === data.name),
-                        count = item && item.count || 0,
-                        remaining = $scope.getRemaining(date);
+                for(let i=$scope.signups.length-1; i>=0; i--) {
+                    let signup = $scope.signups[i];
 
-                    if(data) {
-                        data.error = null;
-                        if(data.count > remaining + count) {
-                            data.error = `Không còn đủ chỗ cho ${data.count} người`;
-                            $scope.disableSave = 'disabled';
+                    if(signup.allow) {
+                        let date = signup.date,
+                            data = $scope.formData[date],
+                            remaining = $scope.getRemaining(date),
+                            item;
+
+                        if(data) {
+                            //find item
+                            item = signup.data.find(item => {
+                                return data.name && item.name === data.name
+                                    || data.email && item.email === data.email
+                                    || data.phone && item.phone === data.phone
+                            });
+
+                            data.error = null;
+                            if(data.count > remaining + (item && item.count || 0)) {
+                                data.error = `Không còn đủ chỗ cho ${data.count} người`;
+                                $scope.disableSave = 'disabled';
+                            }
                         }
                     }
-                });
+                }
             }
         };
 
