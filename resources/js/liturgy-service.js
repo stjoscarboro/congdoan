@@ -92,7 +92,7 @@ require('./airtable-service.js');
                 years = { a: '1', b: '2', c: '3' };
 
             const getIntention = (intentions, date) => {
-                let intention = null;
+                let intention;
 
                 intentions.find(i => {
                     for(let y of Object.keys(years)) {
@@ -102,7 +102,7 @@ require('./airtable-service.js');
                     }
                 });
 
-                return intention;
+                return intention ? intention.name : null;
             };
 
             $q.all([
@@ -118,7 +118,7 @@ require('./airtable-service.js');
                                     record = date && p.find(r => r.date.getTime() === date.getTime());
 
                                 if(record) {
-                                    record.intention = {name: v.name}
+                                    record.intention = v.name
                                 } else {
                                     if(date) {
                                         record = {
