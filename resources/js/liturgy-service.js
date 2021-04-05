@@ -72,6 +72,16 @@ require('./airtable-service.js');
             return deferred.promise;
         };
 
+        /**
+         * findLiturgy
+         *
+         * @param date
+         * @param liturgies
+         * @return {*}
+         */
+        service.findLiturgy = (date, liturgies) => {
+            return liturgies.find(liturgy => liturgy.date.toLocaleDateString() === date.toLocaleDateString());
+        };
 
         /*****************/
         /**** private ****/
@@ -105,7 +115,7 @@ require('./airtable-service.js');
                         records = liturgies.reduce((p, v) => {
                             for(let y of Object.keys(years)) {
                                 let date = v[`date_${y}`],
-                                    record = date && p.find(r => { return r.date.getTime() === date.getTime(); });
+                                    record = date && p.find(r => r.date.getTime() === date.getTime());
 
                                 if(record) {
                                     record.intention = {name: v.name}

@@ -192,7 +192,10 @@ const { app } = require('./angular-app.js');
          * @returns {Date}
          */
         service.parseDate = (value) => {
-            return new Date(Date.parse(value));
+            let date = new Date(Date.parse(value));
+
+            date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+            return date;
         };
 
         /**
@@ -205,6 +208,7 @@ const { app } = require('./angular-app.js');
             array && array.sort((v1, v2) => {
                 let p1 = typeof v1 === 'object' && property ? v1[property] : v1,
                     p2 = typeof v2 === 'object' && property ? v2[property] : v2;
+
                 return p1 && p2 ? p1.localeCompare(p2) : 0;
             });
         };
