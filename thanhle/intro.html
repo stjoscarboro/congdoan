@@ -1,5 +1,5 @@
 <script>(() => { !location.hash && (location.href = './signup.html'); })();</script>
-<div class="intro">
+<div class="intro" ng-if="allows">
     <p>
         Theo thông báo từ chính phủ Ontario và Toà Tổng Giám Mục Giáo Phận Toronto, vì tình hình dịch bệnh hiện
         nay nên các nhà thờ thuộc vùng Toronto sẽ giới hạn số người tham dự trong các thánh lễ. Do vậy nhà thờ
@@ -14,5 +14,13 @@
     <p>
         Nếu quý vị muốn thay đổi số người tham dự, xin cũng điền vào <b><u>email</u></b> và thay đổi số người tham
         dự, hoặc để trống nếu không thể tham dự.
+    </p>
+</div>
+
+<div class="intro" ng-if="!allows" style="width: 720px;">
+    <p>
+        Hiện nay quý ông bà anh chị em muốn tham dự các thánh lễ Chúa Nhật của Cộng Đoàn Thánh Giuse - Scarborough
+        sẽ không cần phải ghi tên. Xin quý ông bà anh chị em tiếp tục đến nhà thờ St. Rose of Lima vào mỗi Chúa Nhật
+        lúc 4:30 PM, chúng tôi sẽ cố gắng sắp xếp chỗ ngồi đầy đủ. Xin chân thành cám ơn.
     </p>
 </div>

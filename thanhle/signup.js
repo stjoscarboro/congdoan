@@ -283,6 +283,10 @@ require('./signup.scss');
         const initSignups = () => {
             loadSignups()
                 .then(() => {
+                    //check allowed signups
+                    let allows = $scope.signups.reduce((p, v) => { v.allow && p.push(v); return p}, []);
+                    $scope.allows = allows.length > 0;
+
                     //render nav bar
                     renderNav();
 

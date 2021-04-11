@@ -1,7 +1,7 @@
 <script>(() => { !location.hash && (location.href = './#/signup'); })();</script>
 <ng-include src="'./intro.html'"></ng-include>
 
-<div class="signup">
+<div class="signup" ng-if="allows">
     <form role="form" ng-submit="submit()" class="content">
         <div ng-repeat="signup in signups track by $index" ng-if="signup.allow">
             <div class="liturgy">
