@@ -9,7 +9,7 @@ require('./airtable-service.js');
         let service = {},
             config = {
                 url: atob(airtable.url.liturgy),
-                key: atob(airtable.key),
+                token: atob(airtable.token),
 
                 tables: {
                     years: {
@@ -29,6 +29,8 @@ require('./airtable-service.js');
                     }
                 }
             };
+
+        $http.defaults.headers.common.Authorization = `Bearer ${config.token}`;
 
         /**
          * loadYears
